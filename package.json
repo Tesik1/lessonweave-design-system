@@ -1,0 +1,32 @@
+{
+  "name": "teachers-app-design-system",
+  "version": "2.0.0",
+  "description": "Design tokens of the teachers app design system (Practice Module, Anki card generator): tokens.json, base.css and a Tailwind preset.",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tesik1/teachers-app-design-system.git"
+  },
+  "files": [
+    "tokens.json",
+    "dist"
+  ],
+  "exports": {
+    "./tokens.json": "./tokens.json",
+    "./base.css": "./dist/base.css",
+    "./tailwind-preset": {
+      "import": "./dist/tailwind-preset.js",
+      "require": "./dist/tailwind-preset.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

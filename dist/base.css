@@ -1,0 +1,111 @@
+/* Generated from tokens.json (design system "Practice Module" v2, package 2.0.0) by scripts/build.mjs. Do not edit. */
+
+:root {
+  --surface: #F4EEE3;
+  --raised: #FFFCF6;
+  --neutral-soft: #ECE6DA;
+  --text: #221E19;
+  --text-muted: #5A5248;
+  --border: #D9CFBF;
+  --border-strong: #867C6D;
+  --accent: #4A4DB0;
+  --accent-hover: #3B3E96;
+  --on-accent: #FFFFFF;
+  --accent-soft: #E8E6F2;
+  --success: #1E7A46;
+  --success-soft: #E5F4EB;
+  --warning: #7A4A00;
+  --warning-fill: #E8A33A;
+  --warning-icon: #B8740C;
+  --on-warning: #221E19;
+  --warning-soft: #FCEBCB;
+  --info: #0B6E8F;
+  --info-soft: #E1EFF1;
+  --danger: #B3261E;
+  --danger-soft: #F7E7E0;
+  --on-danger: #FFFFFF;
+  --focus: #1F2266;
+  --brand: #F6C040;
+  --on-brand: #4A3000;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(34,30,25,0.10);
+  --shadow-md: 0 6px 20px rgba(34,30,25,0.16);
+  --control-lg: 44px;
+  --control-md: 36px;
+  --control-sm: 32px;
+  --touch-min: 44px;
+  --touch-student: 52px;
+  --icon-sm: 18px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+  --dialog-sm: 560px;
+  --dialog-md: 640px;
+  --dialog-lg: 1040px;
+  --font-sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --type-heading-1: 700 24px/30px var(--font-sans);
+  --type-heading-2: 700 20px/26px var(--font-sans);
+  --type-heading-3: 700 18px/24px var(--font-sans);
+  --type-item: 400 18px/28px var(--font-sans);
+  --type-body: 400 15px/22px var(--font-sans);
+  --type-label: 600 14px/20px var(--font-sans);
+  --type-caption: 400 13px/18px var(--font-sans);
+  --type-student-instruction: 700 20px/26px var(--font-sans);
+  --type-student-sentence: 400 18px/36px var(--font-sans);
+  --type-student-body: 400 17px/25px var(--font-sans);
+}
+
+/* Dark theme: toggled per device from Settings > Appearance by setting data-theme="dark" on <html>. */
+[data-theme="dark"] {
+  --surface: #1A1814;
+  --raised: #24211C;
+  --neutral-soft: #2E2A24;
+  --text: #EFE9DF;
+  --text-muted: #B5AC9E;
+  --border: #3A352D;
+  --border-strong: #7D7466;
+  --accent: #A3A6F2;
+  --accent-hover: #B8BAF6;
+  --on-accent: #16183F;
+  --accent-soft: #2B2C4C;
+  --success: #5BC98A;
+  --success-soft: #15301F;
+  --warning: #F5C76A;
+  --warning-fill: #E8A33A;
+  --warning-icon: #F0B84A;
+  --on-warning: #1A1814;
+  --warning-soft: #35290C;
+  --info: #5FC3D9;
+  --info-soft: #123540;
+  --danger: #FF453A;
+  --danger-soft: #3e2520;
+  --on-danger: #1A1814;
+  --focus: #EFE9DF;
+  --brand: #7A621F;
+  --on-brand: #FFF4DE;
+  --shadow-md: 0 6px 20px rgba(0,0,0,0.45);
+}
+
+/* Base rules use :where() so they carry no specificity and every app style overrides them. */
+:where(body) {
+  background: var(--surface);
+  color: var(--text);
+  font: var(--type-body);
+}
+
+/* Focus ring: 3px solid, 2px offset, keyboard focus only. */
+:where(:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+:where(:focus:not(:focus-visible)) {
+  outline: none;
+}
