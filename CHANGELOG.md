@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.1.0 – 2026-10-21
+
+Design system v2.1 (the system is now named "Teachers app design system").
+
+- New tokens: `inline-h` 28px and `text-line` 48px (inline elements and lines of exercise text in the
+  teacher editor, CSS variables only), `radius-xs` 3px (checkboxes, `rounded-xs`), type style
+  `student-score` 56/62/700 (`text-student-score`).
+- Tailwind preset: colours are functions, so opacity modifiers work (`bg-text/40`, `bg-accent/50`) through
+  `color-mix`. Without a modifier the output is unchanged (`var(--x)`), so apps on 2.0.0 keep their CSS.
+- README: opacity support, bundling Source Sans 3 under a strict CSP, the new tokens.
+
 ## 2.0.0 – 2026-10-20
 
 First release of the package, from design system v2.

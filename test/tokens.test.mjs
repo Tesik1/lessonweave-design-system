@@ -17,7 +17,12 @@ const block = (selector) => {
 const rootBlock = block(':root');
 const darkBlock = block('[data-theme="dark"]');
 const ext = presetEsm.theme.extend;
+// Colours are functions (JSON.stringify drops them), so the rest of the preset is checked as text.
 const presetText = JSON.stringify(ext);
+const resolved = (preset) => ({
+  ...preset.theme.extend,
+  colors: Object.fromEntries(Object.entries(preset.theme.extend.colors).map(([n, fn]) => [n, [fn(), fn({ opacityValue: '0.4' })]])),
+});
 const light = (v) => (typeof v === 'string' ? v : v.light);
 
 const allTokens = [
@@ -50,10 +55,29 @@ test('dark theme covers every colour and every themed value', () => {
 });
 
 test('every token is reachable from the Tailwind preset', () => {
-  for (const t of allTokens) {
+  // inline-h and text-line size inline text in the editor; they are CSS variables only.
+  const cssOnly = ['inline-h', 'text-line'];
+  for (const t of allTokens.filter((t) => !tokens.color.tokens.includes(t) && !cssOnly.includes(t.name))) {
     assert.ok(presetText.includes(`"var(--${t.name})"`), `${t.name} not in preset`);
   }
-  for (const t of tokens.color.tokens) assert.equal(ext.colors[t.name], `var(--${t.name})`);
+  for (const t of tokens.color.tokens) assert.equal(typeof ext.colors[t.name], 'function', `${t.name} not in preset`);
+});
+
+test('colours are functions that support opacity', () => {
+  assert.equal(ext.colors.accent(), 'var(--accent)');
+  assert.equal(ext.colors.accent({ opacityValue: undefined }), 'var(--accent)');
+  assert.equal(ext.colors.text({ opacityValue: '0.4' }), 'color-mix(in srgb, var(--text) 40%, transparent)');
+  assert.equal(ext.colors.text({ opacityValue: 0.4 }), 'color-mix(in srgb, var(--text) 40%, transparent)');
+  assert.equal(ext.colors.text({ opacityValue: 'var(--tw-bg-opacity)' }), 'var(--text)');
+});
+
+test('inline element tokens, radius-xs and the score style reach CSS and Tailwind', () => {
+  assert.ok(rootBlock.includes('--inline-h: 28px;'));
+  assert.ok(rootBlock.includes('--text-line: 48px;'));
+  assert.ok(rootBlock.includes('--radius-xs: 3px;'));
+  assert.ok(rootBlock.includes('--type-student-score: 700 56px/62px '));
+  assert.equal(ext.borderRadius.xs, 'var(--radius-xs)');
+  assert.deepEqual(ext.fontSize['student-score'], ['56px', { lineHeight: '62px', fontWeight: '700' }]);
 });
 
 test('radius follows design system v2', () => {
@@ -67,7 +91,7 @@ test('focus ring is 3px with 2px offset on keyboard focus only', () => {
 });
 
 test('ESM and CommonJS presets are identical', () => {
-  assert.deepEqual(presetCjs, presetEsm);
+  assert.deepEqual(resolved(presetCjs), resolved(presetEsm));
 });
 
 test('generated files are up to date with tokens.json', async () => {

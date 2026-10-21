@@ -1,34 +1,42 @@
-// Generated from tokens.json (design system "Practice Module" v2, package 2.0.0) by scripts/build.mjs. Do not edit.
+// Generated from tokens.json (design system "Teachers app design system" v2, package 2.1.0) by scripts/build.mjs. Do not edit.
+
+// Colour from a CSS variable with opacity support (`bg-accent/50`). Without an opacity
+// (Tailwind then passes undefined or `var(--tw-bg-opacity)`) the bare variable is kept.
+const color = (name) => ({ opacityValue } = {}) =>
+  opacityValue === undefined || String(opacityValue).startsWith('var(')
+    ? `var(--${name})`
+    : `color-mix(in srgb, var(--${name}) ${Number(opacityValue) * 100}%, transparent)`;
+
 module.exports = {
   "theme": {
     "extend": {
       "colors": {
-        "surface": "var(--surface)",
-        "raised": "var(--raised)",
-        "neutral-soft": "var(--neutral-soft)",
-        "text": "var(--text)",
-        "text-muted": "var(--text-muted)",
-        "border": "var(--border)",
-        "border-strong": "var(--border-strong)",
-        "accent": "var(--accent)",
-        "accent-hover": "var(--accent-hover)",
-        "on-accent": "var(--on-accent)",
-        "accent-soft": "var(--accent-soft)",
-        "success": "var(--success)",
-        "success-soft": "var(--success-soft)",
-        "warning": "var(--warning)",
-        "warning-fill": "var(--warning-fill)",
-        "warning-icon": "var(--warning-icon)",
-        "on-warning": "var(--on-warning)",
-        "warning-soft": "var(--warning-soft)",
-        "info": "var(--info)",
-        "info-soft": "var(--info-soft)",
-        "danger": "var(--danger)",
-        "danger-soft": "var(--danger-soft)",
-        "on-danger": "var(--on-danger)",
-        "focus": "var(--focus)",
-        "brand": "var(--brand)",
-        "on-brand": "var(--on-brand)"
+        "surface": color("surface"),
+        "raised": color("raised"),
+        "neutral-soft": color("neutral-soft"),
+        "text": color("text"),
+        "text-muted": color("text-muted"),
+        "border": color("border"),
+        "border-strong": color("border-strong"),
+        "accent": color("accent"),
+        "accent-hover": color("accent-hover"),
+        "on-accent": color("on-accent"),
+        "accent-soft": color("accent-soft"),
+        "success": color("success"),
+        "success-soft": color("success-soft"),
+        "warning": color("warning"),
+        "warning-fill": color("warning-fill"),
+        "warning-icon": color("warning-icon"),
+        "on-warning": color("on-warning"),
+        "warning-soft": color("warning-soft"),
+        "info": color("info"),
+        "info-soft": color("info-soft"),
+        "danger": color("danger"),
+        "danger-soft": color("danger-soft"),
+        "on-danger": color("on-danger"),
+        "focus": color("focus"),
+        "brand": color("brand"),
+        "on-brand": color("on-brand")
       },
       "borderColor": {
         "DEFAULT": "var(--border)"
@@ -106,6 +114,13 @@ module.exports = {
             "lineHeight": "25px",
             "fontWeight": "400"
           }
+        ],
+        "student-score": [
+          "56px",
+          {
+            "lineHeight": "62px",
+            "fontWeight": "700"
+          }
         ]
       },
       "spacing": {
@@ -118,6 +133,7 @@ module.exports = {
         "space-48": "var(--space-48)"
       },
       "borderRadius": {
+        "xs": "var(--radius-xs)",
         "md": "var(--radius-md)",
         "lg": "var(--radius-lg)",
         "pill": "var(--radius-pill)"

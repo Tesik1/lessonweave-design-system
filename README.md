@@ -4,7 +4,7 @@ Design tokens shared by the apps of the teachers app: the Practice Module, the A
 generator and the modules that follow. One package, so the apps cannot drift apart.
 
 The source of truth is the Design System artifact
-["Practice Module"](https://claude.ai/artifact/KwNUchhYiqXnfj1BKiQTKb) (it will be renamed
+["Teachers app design system"](https://claude.ai/artifact/KwNUchhYiqXnfj1BKiQTKb) (it will be renamed again
 when the app has its name). This package only carries its tokens; the rules for
 components, states and copy live in the design system's README and component pages.
 Components are shared later, when the apps merge.
@@ -20,7 +20,7 @@ Components are shared later, when the apps merge.
 From git, pinned to a version tag:
 
 ```bash
-npm install github:Tesik1/teachers-app-design-system#v2.0.0
+npm install github:Tesik1/teachers-app-design-system#v2.1.0
 ```
 
 Upgrading to a new design system version means changing the tag in `package.json`.
@@ -45,7 +45,7 @@ export default {
 @tailwind utilities;
 ```
 
-Load Source Sans 3 (400, 600, 700) from Google Fonts in `index.html`.
+Load Source Sans 3 (400, 600, 700) from Google Fonts, or bundle it (e.g. `@fontsource/source-sans-3`) when the app has a strict CSP.
 
 Dark theme: set `data-theme="dark"` on `<html>` (per device, from Settings › Appearance).
 
@@ -57,16 +57,18 @@ Without Tailwind, use the variables directly: `font: var(--type-heading-3)`,
 | Tokens | Classes |
 |---|---|
 | Colours | `bg-accent`, `text-text-muted`, `border-border-strong`, `bg-accent-soft` … (`border` alone uses `--border`) |
-| Type styles | `text-heading-1` … `text-caption`, `text-student-body` (size, line height and weight) |
-| Radius | `rounded-md` (8px), `rounded-lg` (14px), `rounded-pill` |
+| Type styles | `text-heading-1` … `text-caption`, `text-student-body`, `text-student-score` (size, line height and weight) |
+| Radius | `rounded-xs` (3px), `rounded-md` (8px), `rounded-lg` (14px), `rounded-pill` |
 | Shadow | `shadow-sm`, `shadow-md` |
 | Control heights | `h-control-lg`, `h-control-md`, `h-control-sm`, `min-h-touch-min`, `size-control-sm` |
 | Dialog widths | `max-w-dialog-sm`, `max-w-dialog-md`, `max-w-dialog-lg` |
 | Icons | `size-icon-sm`, `size-icon-md`, `size-icon-lg` |
+| Exercise text | `--inline-h` (28px, height of every inline element) and `--text-line` (48px, line height of exercise text) are CSS variables only, no Tailwind classes: `h-[var(--inline-h)]`, `leading-[var(--text-line)]` |
 | Spacing | `p-space-16`, `gap-space-8` … |
 
-Colours are CSS variables holding hex values, so Tailwind's opacity modifiers
-(`bg-accent/50`) do not work. The design system does not use transparent colours.
+Colours are CSS variables holding hex values. The preset wraps them in functions, so Tailwind's
+opacity modifiers work: `bg-accent/50` becomes `color-mix(in srgb, var(--accent) 50%, transparent)`
+(browsers from 2023). Without a modifier the colour stays a bare `var(--accent)`.
 
 ## Releasing a new version
 

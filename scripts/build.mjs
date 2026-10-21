@@ -71,6 +71,26 @@ ${decl(darkVars)}
 `;
 }
 
+// Colours cannot be plain `var(--x)` strings: Tailwind 3 cannot add an alpha channel to a
+// `var()`, so `bg-accent/50` would silently produce nothing. They are functions that build the
+// alpha with `color-mix` instead. JSON cannot hold functions, so the preset marks each colour
+// and `presetSource` swaps the marker for a call of the `color` helper written into the file.
+const COLOR_MARK = '@@color:';
+
+const colorHelper = `// Colour from a CSS variable with opacity support (\`bg-accent/50\`). Without an opacity
+// (Tailwind then passes undefined or \`var(--tw-bg-opacity)\`) the bare variable is kept.
+const color = (name) => ({ opacityValue } = {}) =>
+  opacityValue === undefined || String(opacityValue).startsWith('var(')
+    ? \`var(--\${name})\`
+    : \`color-mix(in srgb, var(--\${name}) \${Number(opacityValue) * 100}%, transparent)\`;
+`;
+
+/** Source of the preset: the `color` helper plus the preset object, exported by `exportLine`. */
+function presetSource(exportLine) {
+  const json = JSON.stringify(preset(), null, 2).replace(/"@@color:([^"]+)"/g, (_, name) => `color(${JSON.stringify(name)})`);
+  return `// ${header}\n\n${colorHelper}\n${exportLine} ${json};\n`;
+}
+
 function preset() {
   const v = (name) => `var(--${name})`;
   const map = (list, key = (n) => n) => Object.fromEntries(list.map((t) => [key(t.name), v(t.name)]));
@@ -84,7 +104,7 @@ function preset() {
   return {
     theme: {
       extend: {
-        colors: map(tokens.color.tokens),
+        colors: Object.fromEntries(tokens.color.tokens.map((t) => [t.name, COLOR_MARK + t.name])),
         borderColor: { DEFAULT: v('border') },
         fontFamily: Object.fromEntries(Object.keys(tokens.type.families).map((f) => [f, v(`font-${f}`)])),
         fontSize,
@@ -105,10 +125,9 @@ function preset() {
 export function build() {
   const out = join(root, 'dist');
   mkdirSync(out, { recursive: true });
-  const json = JSON.stringify(preset(), null, 2);
   writeFileSync(join(out, 'base.css'), baseCss());
-  writeFileSync(join(out, 'tailwind-preset.js'), `// ${header}\nexport default ${json};\n`);
-  writeFileSync(join(out, 'tailwind-preset.cjs'), `// ${header}\nmodule.exports = ${json};\n`);
+  writeFileSync(join(out, 'tailwind-preset.js'), presetSource('export default'));
+  writeFileSync(join(out, 'tailwind-preset.cjs'), presetSource('module.exports ='));
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
