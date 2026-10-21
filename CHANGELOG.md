@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.1 – 2026-10-21
+
+- `radius-xs` 3px → 2px (`rounded-xs`), measured against the native 18px checkbox of the Anki generator.
+
 ## 2.1.0 – 2026-10-21
 
 Design system v2.1 (the system is now named "Teachers app design system").

@@ -1,6 +1,6 @@
 {
   "name": "teachers-app-design-system",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Design tokens of the teachers app design system (Practice Module, Anki card generator): tokens.json, base.css and a Tailwind preset.",
   "private": true,
   "type": "module",
