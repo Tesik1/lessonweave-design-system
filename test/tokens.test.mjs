@@ -74,7 +74,7 @@ test('colours are functions that support opacity', () => {
 test('inline element tokens, radius-xs and the score style reach CSS and Tailwind', () => {
   assert.ok(rootBlock.includes('--inline-h: 28px;'));
   assert.ok(rootBlock.includes('--text-line: 48px;'));
-  assert.ok(rootBlock.includes('--radius-xs: 3px;'));
+  assert.ok(rootBlock.includes('--radius-xs: 2px;'));
   assert.ok(rootBlock.includes('--type-student-score: 700 56px/62px '));
   assert.equal(ext.borderRadius.xs, 'var(--radius-xs)');
   assert.deepEqual(ext.fontSize['student-score'], ['56px', { lineHeight: '62px', fontWeight: '700' }]);

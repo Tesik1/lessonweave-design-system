@@ -20,7 +20,7 @@ Components are shared later, when the apps merge.
 From git, pinned to a version tag:
 
 ```bash
-npm install github:Tesik1/teachers-app-design-system#v2.1.0
+npm install github:Tesik1/teachers-app-design-system#v2.1.1
 ```
 
 Upgrading to a new design system version means changing the tag in `package.json`.
@@ -58,7 +58,7 @@ Without Tailwind, use the variables directly: `font: var(--type-heading-3)`,
 |---|---|
 | Colours | `bg-accent`, `text-text-muted`, `border-border-strong`, `bg-accent-soft` … (`border` alone uses `--border`) |
 | Type styles | `text-heading-1` … `text-caption`, `text-student-body`, `text-student-score` (size, line height and weight) |
-| Radius | `rounded-xs` (3px), `rounded-md` (8px), `rounded-lg` (14px), `rounded-pill` |
+| Radius | `rounded-xs` (2px), `rounded-md` (8px), `rounded-lg` (14px), `rounded-pill` |
 | Shadow | `shadow-sm`, `shadow-md` |
 | Control heights | `h-control-lg`, `h-control-md`, `h-control-sm`, `min-h-touch-min`, `size-control-sm` |
 | Dialog widths | `max-w-dialog-sm`, `max-w-dialog-md`, `max-w-dialog-lg` |

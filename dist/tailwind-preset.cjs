@@ -1,4 +1,4 @@
-// Generated from tokens.json (design system "Teachers app design system" v2, package 2.1.0) by scripts/build.mjs. Do not edit.
+// Generated from tokens.json (design system "Teachers app design system" v2, package 2.1.1) by scripts/build.mjs. Do not edit.
 
 // Colour from a CSS variable with opacity support (`bg-accent/50`). Without an opacity
 // (Tailwind then passes undefined or `var(--tw-bg-opacity)`) the bare variable is kept.
