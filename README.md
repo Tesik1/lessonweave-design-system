@@ -20,7 +20,7 @@ Components are shared later, when the apps merge.
 From git, pinned to a version tag:
 
 ```bash
-npm install github:Tesik1/teachers-app-design-system#v2.1.1
+npm install github:Tesik1/teachers-app-design-system#v2.3.0
 ```
 
 Upgrading to a new design system version means changing the tag in `package.json`.
