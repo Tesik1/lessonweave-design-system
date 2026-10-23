@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.3.0 – 2026-10-23
+
+Design system v2.3.0: the field error.
+
+- The message about one field or a group of fields sits directly under it, with `alert-circle` and the
+  text in `danger` at the `label` style (`text-label text-danger`). Before, it was `caption` text in
+  `text`. Messages inside a `danger-soft` box keep `text`.
+- No token values changed: `tokens.json` is the design system's again, with the `danger` usage note and the
+  usage notes of `focus` and `control-md` from design system 2.2. The version follows the
+  design system (2.2.x changed components only, so the package skipped it).
+
 ## 2.1.1 – 2026-10-21
 
 - `radius-xs` 3px → 2px (`rounded-xs`), measured against the native 18px checkbox of the Anki generator.
