@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="LessonWeave">
+<title>LessonWeave</title>
+<g transform="translate(0 0) scale(1)">
+<defs>
+<mask id="lw-mark-mono-under" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
+<rect width="120" height="120" fill="#fff"/>
+<path d="M30 10L40 17L50 10V110L40 103L30 110Z" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/>
+<path d="M70 10L80 17L90 10V110L80 103L70 110Z" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/>
+</mask>
+<mask id="lw-mark-mono-verticals" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
+<rect width="120" height="120" fill="#fff"/>
+<path d="M28 68.5H52M28 91.5H52M68 68.5H92M68 91.5H92" stroke="#000" stroke-width="3"/>
+</mask>
+</defs>
+<g mask="url(#lw-mark-mono-under)">
+<path d="M10 30H110L103 40L110 50H10L17 40Z" fill="#221E19"/>
+<path d="M10 70H110L103 80L110 90H10L17 80Z" fill="#221E19"/>
+</g>
+<g mask="url(#lw-mark-mono-verticals)">
+<path d="M30 10L40 17L50 10V110L40 103L30 110Z" fill="#221E19"/>
+<path d="M70 10L80 17L90 10V110L80 103L70 110Z" fill="#221E19"/>
+</g>
+<rect x="26" y="70" width="28" height="20" fill="#221E19"/>
+<rect x="66" y="70" width="28" height="20" fill="#221E19"/>
+</g>
+</svg>

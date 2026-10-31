@@ -11,7 +11,8 @@
   },
   "files": [
     "tokens.json",
-    "dist"
+    "dist",
+    "brand"
   ],
   "exports": {
     "./tokens.json": "./tokens.json",
@@ -20,13 +21,18 @@
       "import": "./dist/tailwind-preset.js",
       "require": "./dist/tailwind-preset.cjs"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./brand/*": "./brand/*"
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node --test test/*.test.mjs"
+    "test": "node --test test/*.test.mjs",
+    "build:brand": "node scripts/brand/build.mjs"
   },
   "engines": {
     "node": ">=22"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2"
   }
 }

@@ -1,0 +1,215 @@
+// Builds the LessonWeave logo files in brand/ from the mark geometry below and the
+// outlined wordmark (brand/src/wordmark.json, from outline-wordmark.py).
+// Run with `npm run build:brand`. SVGs are pure text; the PNG and ICO icons are
+// rendered with @resvg/resvg-js. The output is committed.
+//
+// The gaps between ribbons are cut out with a mask, so every file works on any
+// background. (The branding board draws them as strokes in the background colour.)
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const wordmark = JSON.parse(readFileSync(join(root, 'brand', 'src', 'wordmark.json'), 'utf8'));
+
+/** Colours of each variant: ribbons top, left, right, bottom, then "Lesson" and "Weave". */
+export const variants = {
+  color: { top: '#E3B23C', left: '#2F7A78', right: '#8C4A78', bottom: '#4A4DB0', lesson: '#221E19', weave: '#4A4DB0' },
+  dark: { top: '#EBC25A', left: '#74C9C7', right: '#C48AB5', bottom: '#A3A6F2', lesson: '#EFE9DF', weave: '#A3A6F2' },
+  mono: { top: '#221E19', left: '#221E19', right: '#221E19', bottom: '#221E19', lesson: '#221E19', weave: '#221E19' },
+  inverse: { top: '#FFFFFF', left: '#FFFFFF', right: '#FFFFFF', bottom: '#FFFFFF', lesson: '#FFFFFF', weave: '#FFFFFF' },
+};
+
+// Mark geometry, viewBox 0 0 120 120 (from the branding board).
+const TOP = 'M10 30H110L103 40L110 50H10L17 40Z';
+const BOTTOM = 'M10 70H110L103 80L110 90H10L17 80Z';
+const LEFT = 'M30 10L40 17L50 10V110L40 103L30 110Z';
+const RIGHT = 'M70 10L80 17L90 10V110L80 103L70 110Z';
+// The bottom ribbon passes over both vertical ribbons: these patches redraw it there,
+// and the 3-unit lines above and below each patch are the gaps cut into the verticals.
+const PATCHES = [26, 66];
+
+const fmt = (n) => String(Math.round(n * 1000) / 1000);
+
+/**
+ * The mark as SVG elements in its own 120×120 space. `id` must be unique in the
+ * document the elements end up in (masks are referenced by id).
+ */
+export function markElements(c, id) {
+  const under = `${id}-under`;
+  const verticals = `${id}-verticals`;
+  return [
+    '<defs>',
+    // Horizontals lose a 2.5-unit gap on each side of both verticals.
+    `<mask id="${under}" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">`,
+    '<rect width="120" height="120" fill="#fff"/>',
+    `<path d="${LEFT}" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/>`,
+    `<path d="${RIGHT}" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/>`,
+    '</mask>',
+    // Verticals lose the gap lines above and below the bottom ribbon.
+    `<mask id="${verticals}" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">`,
+    '<rect width="120" height="120" fill="#fff"/>',
+    `<path d="${PATCHES.map((x) => `M${x + 2} 68.5H${x + 26}M${x + 2} 91.5H${x + 26}`).join('')}" stroke="#000" stroke-width="3"/>`,
+    '</mask>',
+    '</defs>',
+    `<g mask="url(#${under})">`,
+    `<path d="${TOP}" fill="${c.top}"/>`,
+    `<path d="${BOTTOM}" fill="${c.bottom}"/>`,
+    '</g>',
+    `<g mask="url(#${verticals})">`,
+    `<path d="${LEFT}" fill="${c.left}"/>`,
+    `<path d="${RIGHT}" fill="${c.right}"/>`,
+    '</g>',
+    ...PATCHES.map((x) => `<rect x="${x}" y="70" width="28" height="20" fill="${c.bottom}"/>`),
+  ];
+}
+
+// The wordmark is laid out as the branding board does it in CSS: font-size F,
+// line-height 1, vertically centred. The baseline sits at (F + ascender + descender) / 2
+// from the top of the line box (half-leading may be negative).
+const em = wordmark.unitsPerEm;
+const baselineInBox = (F) => (F * (1 + (wordmark.ascender + wordmark.descender) / em)) / 2;
+const wordWidth = (F) => (F * wordmark.advance) / em;
+
+function wordElements(c, x, baseline, F) {
+  const s = fmt(F / em);
+  return [
+    `<g transform="translate(${fmt(x)} ${fmt(baseline)}) scale(${s})">`,
+    `<path d="${wordmark.paths.lesson}" fill="${c.lesson}"/>`,
+    `<path d="${wordmark.paths.weave}" fill="${c.weave}"/>`,
+    '</g>',
+  ];
+}
+
+const svg = (w, h, label, body) =>
+  [
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${fmt(w)} ${fmt(h)}" width="${fmt(w)}" height="${fmt(h)}" role="img" aria-label="${label}">`,
+    `<title>${label}</title>`,
+    ...body,
+    '</svg>',
+    '',
+  ].join('\n');
+
+const placeMark = (x, y, size, elements) => [
+  `<g transform="translate(${fmt(x)} ${fmt(y)}) scale(${fmt(size / 120)})">`,
+  ...elements,
+  '</g>',
+];
+
+/** Horizontal logo (main form). Proportions from the board: mark 1.5 F, gap 20/72 F. */
+export function logo(c, id, F = 72) {
+  const M = 1.5 * F;
+  const gap = (20 / 72) * F;
+  const width = M + gap + wordWidth(F);
+  const baseline = (M - F) / 2 + baselineInBox(F);
+  return svg(width, M, 'LessonWeave', [...placeMark(0, 0, M, markElements(c, id)), ...wordElements(c, M + gap, baseline, F)]);
+}
+
+/** Stacked logo. Proportions from the board: mark 84, gap 14, font 40. */
+export function logoVertical(c, id, F = 40) {
+  const M = 2.1 * F;
+  const gap = 0.35 * F;
+  const width = Math.max(M, wordWidth(F));
+  const baseline = M + gap + baselineInBox(F);
+  return svg(width, M + gap + F, 'LessonWeave', [
+    ...placeMark((width - M) / 2, 0, M, markElements(c, id)),
+    ...wordElements(c, (width - wordWidth(F)) / 2, baseline, F),
+  ]);
+}
+
+export function mark(c, id, size = 120) {
+  return svg(size, size, 'LessonWeave', placeMark(0, 0, size, markElements(c, id)));
+}
+
+/**
+ * App icon: the mark on a tile. `markRatio` is the mark size against the tile,
+ * `radius` the corner radius against the tile (0 = square, full bleed).
+ */
+export function icon({ size, background, colors, markRatio, radius, id }) {
+  const m = size * markRatio;
+  return svg(size, size, 'LessonWeave', [
+    `<rect width="${size}" height="${size}" rx="${fmt(size * radius)}" fill="${background}"/>`,
+    ...placeMark((size - m) / 2, (size - m) / 2, m, markElements(colors, id)),
+  ]);
+}
+
+const CREAM = '#F4EEE3';
+const NIGHT = '#1A1814';
+
+/** Ratios from the branding board (Ikona aplikace a favicon). */
+export const icons = {
+  // iOS: square, the system rounds the corners. 172/220 of the tile.
+  'app-icon-ios-1024': { size: 1024, background: CREAM, colors: variants.color, markRatio: 172 / 220, radius: 0 },
+  'apple-touch-icon-180': { size: 180, background: CREAM, colors: variants.color, markRatio: 172 / 220, radius: 0 },
+  // PWA "any": rounded tile, 75/96 of the tile, corners 22 %.
+  'icon-192': { size: 192, background: CREAM, colors: variants.color, markRatio: 75 / 96, radius: 0.22 },
+  'icon-512': { size: 512, background: CREAM, colors: variants.color, markRatio: 75 / 96, radius: 0.22 },
+  // PWA / Android maskable: full bleed, the mark inside the 80 % safe circle (124/200).
+  'icon-maskable-512': { size: 512, background: CREAM, colors: variants.color, markRatio: 124 / 200, radius: 0 },
+  // Optional dark variant: 125/160 of the tile.
+  'icon-dark-512': { size: 512, background: NIGHT, colors: variants.dark, markRatio: 125 / 160, radius: 0.22 },
+  // Favicons at real size: 28 in 32 (radius 6), 14 in 16 (radius 3).
+  'favicon-32': { size: 32, background: CREAM, colors: variants.color, markRatio: 28 / 32, radius: 6 / 32 },
+  'favicon-16': { size: 16, background: CREAM, colors: variants.color, markRatio: 14 / 16, radius: 3 / 16 },
+};
+
+/** Every SVG file in brand/, as { path: content }. */
+export function svgFiles() {
+  const files = {};
+  for (const [name, c] of Object.entries(variants)) {
+    files[`brand/logo-${name}.svg`] = logo(c, `lw-logo-${name}`);
+    files[`brand/logo-vertical-${name}.svg`] = logoVertical(c, `lw-logo-vertical-${name}`);
+    files[`brand/mark-${name}.svg`] = mark(c, `lw-mark-${name}`);
+  }
+  for (const [name, spec] of Object.entries(icons)) {
+    files[`brand/icons/${name}.svg`] = icon({ ...spec, id: `lw-${name}` });
+  }
+  // The SVG favicon uses the 32 px design and scales.
+  files['brand/icons/favicon.svg'] = files['brand/icons/favicon-32.svg'];
+  return files;
+}
+
+/** A .ico file holding PNG images (supported by every current browser and Windows). */
+function ico(pngs) {
+  const header = Buffer.alloc(6 + 16 * pngs.length);
+  header.writeUInt16LE(0, 0);
+  header.writeUInt16LE(1, 2);
+  header.writeUInt16LE(pngs.length, 4);
+  let offset = header.length;
+  pngs.forEach(({ size, data }, i) => {
+    const e = 6 + 16 * i;
+    header.writeUInt8(size >= 256 ? 0 : size, e);
+    header.writeUInt8(size >= 256 ? 0 : size, e + 1);
+    header.writeUInt16LE(1, e + 4); // colour planes
+    header.writeUInt16LE(32, e + 6); // bits per pixel
+    header.writeUInt32LE(data.length, e + 8);
+    header.writeUInt32LE(offset, e + 12);
+    offset += data.length;
+  });
+  return Buffer.concat([header, ...pngs.map((p) => p.data)]);
+}
+
+async function main() {
+  const { Resvg } = await import('@resvg/resvg-js');
+  const files = svgFiles();
+  mkdirSync(join(root, 'brand', 'icons'), { recursive: true });
+  for (const [path, content] of Object.entries(files)) writeFileSync(join(root, path), content);
+
+  const png = (svgText, width) => new Resvg(svgText, { fitTo: { mode: 'width', value: width } }).render().asPng();
+  for (const [name, spec] of Object.entries(icons)) {
+    writeFileSync(join(root, 'brand', 'icons', `${name}.png`), png(files[`brand/icons/${name}.svg`], spec.size));
+  }
+  // favicon.ico: the 16 px and 32 px designs, plus 48 px scaled from the 32 px one.
+  const favicon32 = files['brand/icons/favicon-32.svg'];
+  writeFileSync(
+    join(root, 'brand', 'icons', 'favicon.ico'),
+    ico([
+      { size: 16, data: png(files['brand/icons/favicon-16.svg'], 16) },
+      { size: 32, data: png(favicon32, 32) },
+      { size: 48, data: png(favicon32, 48) },
+    ]),
+  );
+  console.log(`brand/: ${Object.keys(files).length} SVG files, ${Object.keys(icons).length} PNG icons, favicon.ico`);
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) await main();
