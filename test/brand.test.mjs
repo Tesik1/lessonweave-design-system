@@ -44,3 +44,26 @@ test('the animated mark follows the module tokens and stands still with reduced 
     assert.match(content, /prefers-reduced-motion:reduce\)\{\.lw-weave,\.lw-weave \*\{animation:none!important\}/);
   }
 });
+
+test('each module has a header lockup in both themes, its tag in the module colour', () => {
+  const tokens = JSON.parse(readFileSync(new URL('tokens.json', root), 'utf8')).color.tokens;
+  const value = (name) => tokens.find((t) => t.name === name).value;
+  const files = svgFiles();
+  for (const m of ['flashcards', 'practice', 'planner', 'insights']) {
+    for (const theme of ['light', 'dark']) {
+      const content = files[`brand/lockups/${m}-${theme}.svg`];
+      assert.ok(content, `brand/lockups/${m}-${theme}.svg missing`);
+      assert.match(content, /viewBox="0 0 [\d.]+ 40"/, `${m}-${theme}: 40 px high`);
+      assert.match(content, new RegExp(`aria-label="LessonWeave ${m[0].toUpperCase()}${m.slice(1)}"`));
+      assert.ok(content.includes(`<rect x="50" y="22" width="`) && content.includes(`fill="${value(`module-${m}`)[theme]}"/>`), `${m}-${theme}: tag colour`);
+      assert.ok(content.includes(`fill="${value(`on-module-${m}`)[theme]}"/>`), `${m}-${theme}: tag text colour`);
+    }
+  }
+});
+
+test('the top ribbon is the Flashcards module colour', () => {
+  const tokens = JSON.parse(readFileSync(new URL('tokens.json', root), 'utf8')).color.tokens;
+  const flashcards = tokens.find((t) => t.name === 'module-flashcards').value;
+  assert.ok(svgFiles()['brand/mark-color.svg'].includes(`fill="${flashcards.light}"`));
+  assert.ok(svgFiles()['brand/mark-dark.svg'].includes(`fill="${flashcards.dark}"`));
+});

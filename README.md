@@ -91,6 +91,7 @@ boards. Use them as files; do not redraw the logo or set the wordmark in a font.
 | `logo-vertical-{…}.svg` | Stacked logo, where there is little width |
 | `mark-{…}.svg` | The mark alone |
 | `mark-animated.svg`, `mark-animated-dark.svg` | The animated mark for loading (see below) |
+| `lockups/{flashcards,practice,planner,insights}-{light,dark}.svg` | Header lockup: mark, wordmark and under it the module name on a tag in the module colour (see Header) |
 | `modules/{flashcards,practice,planner,insights}-{light,dark}.svg` | Module icon: the module's own ribbon in colour, the others in `ribbon-muted` (`#D3C8B6` / `#423C33`) |
 | `icons/app-icon-ios-1024.png`, `icons/apple-touch-icon-180.png` | iOS, square (the system rounds the corners) |
 | `icons/icon-192.png`, `icons/icon-512.png` | Web app manifest, `purpose: "any"` |
@@ -110,8 +111,17 @@ Do not change the colours or the order of the ribbons, stretch, rotate, or add s
 import logoUrl from 'lessonweave-design-system/brand/logo-color.svg';
 ```
 
-The wordmark is Outfit 600 converted to paths (`scripts/brand/outline-wordmark.py`; the font and its
-OFL licence are in `scripts/brand/fonts/`). Apps never load Outfit.
+The wordmark and the module names on the lockup tags are Outfit 600 converted to paths
+(`scripts/brand/outline-wordmark.py`; the font and its OFL licence are in `scripts/brand/fonts/`).
+Apps never load Outfit.
+
+### Header
+
+The app header shows the module's lockup from `brand/lockups/`: 40 px high, 36 px on a phone, as a
+link to the module's start page. Light and dark files swap with the theme. The link carries the
+name ("LessonWeave Flashcards"), so the image itself can be decorative. Nothing else marks the
+module in the header: no module icon, no coloured text. A TEST badge for a test deployment stays
+next to the lockup.
 
 ### Loading
 
