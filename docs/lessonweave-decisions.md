@@ -58,8 +58,15 @@ fail as text on cream anyway.
 Note: a mustard shape on cream is only 1.7:1 – fine for decoration (illustrations are
 `aria-hidden`), and the glyph on it uses `on-module` (8.4:1).
 
+## 4 – inactive ribbon grey and the dark mono logo (2026-10-31)
+
+- **New token `ribbon-muted`**: light `#D3C8B6` (as on the board, 1.43:1 on cream), dark `#423C33`
+  (1.63:1 on night – equally quiet). Only for the other ribbons in a module icon. Its own token, so
+  module icons do not change when `border` does. Files: `brand/modules/{module}-{light,dark}.svg`.
+- **New logo variant `mono-dark`** in the dark theme's text colour `#EFE9DF` (14.7:1 on night), the
+  mirror of `mono`. `inverse` (white) stays for coloured fills.
+
 ## Open
 
-- 4 – inactive ribbon grey `#D3C8B6` and the dark mono logo.
 - 7 – logo size in the header and on sign-in; animated loader vs spinner.
 - 8 – module names (Flashcards = Anki generator?) and renaming the design system and package.

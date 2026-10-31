@@ -5,7 +5,8 @@
 LessonWeave logo and icons (no token values changed; the version is set when the design system
 takes the branding).
 
-- `brand/`: horizontal and stacked logo and the mark in colour, dark, mono and inverse; app icons
+- `brand/`: horizontal and stacked logo and the mark in colour, dark, mono, mono-dark and inverse;
+  module icons (light and dark) for Flashcards, Practice, Planner and Insights; app icons
   (iOS 1024 and 180, manifest 192 / 512 / maskable 512, dark 512) and favicon (SVG, ICO 16/32/48).
 - The wordmark is outlined from Outfit 600 (letter-spacing −0.02em, kerned), so apps do not load the
   font. Gaps between ribbons are a mask, so the files work on any background.

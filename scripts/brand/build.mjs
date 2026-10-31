@@ -17,6 +17,8 @@ export const variants = {
   color: { top: '#E3B23C', left: '#2F7A78', right: '#8C4A78', bottom: '#4A4DB0', lesson: '#221E19', weave: '#4A4DB0' },
   dark: { top: '#EBC25A', left: '#74C9C7', right: '#C48AB5', bottom: '#A3A6F2', lesson: '#EFE9DF', weave: '#A3A6F2' },
   mono: { top: '#221E19', left: '#221E19', right: '#221E19', bottom: '#221E19', lesson: '#221E19', weave: '#221E19' },
+  // Mono on a dark background, in the dark theme's text colour.
+  'mono-dark': { top: '#EFE9DF', left: '#EFE9DF', right: '#EFE9DF', bottom: '#EFE9DF', lesson: '#EFE9DF', weave: '#EFE9DF' },
   inverse: { top: '#FFFFFF', left: '#FFFFFF', right: '#FFFFFF', bottom: '#FFFFFF', lesson: '#FFFFFF', weave: '#FFFFFF' },
 };
 
@@ -133,6 +135,21 @@ export function icon({ size, background, colors, markRatio, radius, id }) {
   ]);
 }
 
+/**
+ * Module icons: the mark with only the module's ribbon in colour, the others in
+ * `ribbon-muted`. Each module owns one ribbon.
+ */
+const RIBBON_MUTED = { light: '#D3C8B6', dark: '#423C33' };
+export const modules = { flashcards: 'top', practice: 'left', planner: 'right', insights: 'bottom' };
+
+export function moduleColors(module, theme) {
+  const full = theme === 'dark' ? variants.dark : variants.color;
+  const muted = RIBBON_MUTED[theme];
+  const own = modules[module];
+  const pick = (ribbon) => (ribbon === own ? full[ribbon] : muted);
+  return { top: pick('top'), left: pick('left'), right: pick('right'), bottom: pick('bottom') };
+}
+
 const CREAM = '#F4EEE3';
 const NIGHT = '#1A1814';
 
@@ -160,6 +177,11 @@ export function svgFiles() {
     files[`brand/logo-${name}.svg`] = logo(c, `lw-logo-${name}`);
     files[`brand/logo-vertical-${name}.svg`] = logoVertical(c, `lw-logo-vertical-${name}`);
     files[`brand/mark-${name}.svg`] = mark(c, `lw-mark-${name}`);
+  }
+  for (const module of Object.keys(modules)) {
+    for (const theme of ['light', 'dark']) {
+      files[`brand/modules/${module}-${theme}.svg`] = mark(moduleColors(module, theme), `lw-module-${module}-${theme}`);
+    }
   }
   for (const [name, spec] of Object.entries(icons)) {
     files[`brand/icons/${name}.svg`] = icon({ ...spec, id: `lw-${name}` });
@@ -193,6 +215,7 @@ async function main() {
   const { Resvg } = await import('@resvg/resvg-js');
   const files = svgFiles();
   mkdirSync(join(root, 'brand', 'icons'), { recursive: true });
+  mkdirSync(join(root, 'brand', 'modules'), { recursive: true });
   for (const [path, content] of Object.entries(files)) writeFileSync(join(root, path), content);
 
   const png = (svgText, width) => new Resvg(svgText, { fitTo: { mode: 'width', value: width } }).render().asPng();

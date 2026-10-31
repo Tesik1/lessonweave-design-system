@@ -77,9 +77,10 @@ boards. Use them as files; do not redraw the logo or set the wordmark in a font.
 
 | File | What it is |
 |---|---|
-| `logo-{color,dark,mono,inverse}.svg` | Horizontal logo (main form). `dark` on `surface` dark, `inverse` on a coloured fill |
+| `logo-{color,dark,mono,mono-dark,inverse}.svg` | Horizontal logo (main form). `dark` and `mono-dark` on `surface` dark, `inverse` on a coloured fill |
 | `logo-vertical-{…}.svg` | Stacked logo, where there is little width |
 | `mark-{…}.svg` | The mark alone |
+| `modules/{flashcards,practice,planner,insights}-{light,dark}.svg` | Module icon: the module's own ribbon in colour, the others in `ribbon-muted` (`#D3C8B6` / `#423C33`) |
 | `icons/app-icon-ios-1024.png`, `icons/apple-touch-icon-180.png` | iOS, square (the system rounds the corners) |
 | `icons/icon-192.png`, `icons/icon-512.png` | Web app manifest, `purpose: "any"` |
 | `icons/icon-maskable-512.png` | Web app manifest, `purpose: "maskable"` (mark inside the 80 % safe circle) |
