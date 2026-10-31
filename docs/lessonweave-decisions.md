@@ -24,10 +24,42 @@ the Anki generator.
   "Your students are already in Anki") → the colour of the module's own ribbon (Practice teal,
   Flashcards mustard). The token for it, and the text colour on it, is decided in point 3.
 
+## 3 – module colours in the interface (2026-10-31)
+
+**Where:** identity only. Filled shapes: the module's ribbon icon (navigation, module switcher),
+illustrations in empty states and on start screens, materials. Always next to the module name or
+its ribbon icon.
+
+**Never:** text (headings, links, labels), controls (buttons, chips, borders, focus), selected
+state, status dots or badges. That is where they would be mistaken for `warning-fill` (mustard),
+`success` / `info` (teal) or `accent` (indigo = Insights), and mustard (1.7:1) and teal (4.35:1)
+fail as text on cream anyway.
+
+**Soft variants:** none for now. Added when a design needs one; Insights soft would almost equal
+`accent-soft` (the selected state), so that one needs care.
+
+**Tokens:** named per module, plus aliases for the current module.
+
+| Token | Light | Dark |
+|---|---|---|
+| `module-flashcards` | `#E3B23C` | `#EBC25A` |
+| `module-practice` | `#2F7A78` | `#74C9C7` |
+| `module-planner` | `#8C4A78` | `#C48AB5` |
+| `module-insights` | `#4A4DB0` | `#A3A6F2` |
+| `on-module-flashcards` | `#221E19` (8.4:1) | `#1A1814` (10.5:1) |
+| `on-module-practice` | `#FFFFFF` (5.0:1) | `#1A1814` (9.2:1) |
+| `on-module-planner` | `#FFFFFF` (6.2:1) | `#1A1814` (6.5:1) |
+| `on-module-insights` | `#FFFFFF` (7.0:1) | `#1A1814` (7.8:1) |
+
+`module` and `on-module` point to the current module's pair, chosen by `data-module` on `<html>`
+(`flashcards`, `practice`, `planner`, `insights`). Shared components (`EmptyState`) use
+`bg-module text-on-module` and do not need to know which module they are in.
+
+Note: a mustard shape on cream is only 1.7:1 – fine for decoration (illustrations are
+`aria-hidden`), and the glyph on it uses `on-module` (8.4:1).
+
 ## Open
 
-- 3 – module colours in the interface (contrast, conflict with warning / success / accent, soft
-  variants, text on them).
 - 4 – inactive ribbon grey `#D3C8B6` and the dark mono logo.
 - 7 – logo size in the header and on sign-in; animated loader vs spinner.
 - 8 – module names (Flashcards = Anki generator?) and renaming the design system and package.
