@@ -70,6 +70,37 @@ Colours are CSS variables holding hex values. The preset wraps them in functions
 opacity modifiers work: `bg-accent/50` becomes `color-mix(in srgb, var(--accent) 50%, transparent)`
 (browsers from 2023). Without a modifier the colour stays a bare `var(--accent)`.
 
+## Logo and icons (LessonWeave)
+
+`brand/` holds the LessonWeave logo files, built by `npm run build:brand` from the branding
+boards. Use them as files; do not redraw the logo or set the wordmark in a font.
+
+| File | What it is |
+|---|---|
+| `logo-{color,dark,mono,inverse}.svg` | Horizontal logo (main form). `dark` on `surface` dark, `inverse` on a coloured fill |
+| `logo-vertical-{…}.svg` | Stacked logo, where there is little width |
+| `mark-{…}.svg` | The mark alone |
+| `icons/app-icon-ios-1024.png`, `icons/apple-touch-icon-180.png` | iOS, square (the system rounds the corners) |
+| `icons/icon-192.png`, `icons/icon-512.png` | Web app manifest, `purpose: "any"` |
+| `icons/icon-maskable-512.png` | Web app manifest, `purpose: "maskable"` (mark inside the 80 % safe circle) |
+| `icons/icon-dark-512.png` | Optional dark variant |
+| `icons/favicon.svg`, `icons/favicon.ico` | Favicon (ICO holds 16, 32 and 48 px) |
+
+Every icon PNG has its SVG source next to it. The gaps between ribbons are cut out (a mask), not
+painted, so every file works on any background.
+
+Rules from the branding: keep clear space of one ribbon width (1/6 of the mark) around the logo;
+logo with text at least 120 px wide, mark alone at least 24 px, favicon 16 px only on its tile.
+Do not change the colours or the order of the ribbons, stretch, rotate, or add shadows.
+
+```js
+// Vite: import the file URL
+import logoUrl from 'teachers-app-design-system/brand/logo-color.svg';
+```
+
+The wordmark is Outfit 600 converted to paths (`scripts/brand/outline-wordmark.py`; the font and its
+OFL licence are in `scripts/brand/fonts/`). Apps never load Outfit.
+
 ## Releasing a new version
 
 1. Change the design system artifact first and publish a new version of it with a changelog

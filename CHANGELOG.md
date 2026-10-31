@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+LessonWeave logo and icons (no token values changed; the version is set when the design system
+takes the branding).
+
+- `brand/`: horizontal and stacked logo and the mark in colour, dark, mono and inverse; app icons
+  (iOS 1024 and 180, manifest 192 / 512 / maskable 512, dark 512) and favicon (SVG, ICO 16/32/48).
+- The wordmark is outlined from Outfit 600 (letter-spacing −0.02em, kerned), so apps do not load the
+  font. Gaps between ribbons are a mask, so the files work on any background.
+- `npm run build:brand` rebuilds the files; a test fails when the SVGs are out of date.
+- `.gitattributes` keeps LF line endings, so that test also passes on Windows checkouts.
+
 ## 2.3.0 – 2026-10-23
 
 Design system v2.3.0: the field error.
