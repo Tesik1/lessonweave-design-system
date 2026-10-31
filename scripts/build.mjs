@@ -12,8 +12,29 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 const header = `Generated from tokens.json (design system "${tokens.name}" v${tokens.version}, package ${pkg.version}) by scripts/build.mjs. Do not edit.`;
 
 // Values that differ per theme are { light, dark }; the rest are plain strings.
-const light = (v) => (typeof v === 'string' ? v : v.light);
-const dark = (v) => (typeof v === 'string' ? null : v.dark);
+// A value "{name}" is an alias of another token and becomes `var(--name)`.
+const ref = (v) => v.replace(/^\{(.+)\}$/, 'var(--$1)');
+const isAlias = (v) => /^\{.+\}$/.test(typeof v === 'string' ? v : v.light);
+const light = (v) => ref(typeof v === 'string' ? v : v.light);
+// An alias is resolved where it is used, so the dark block does not repeat it.
+const dark = (v) => (typeof v === 'string' || (isAlias(v) && v.light === v.dark) ? null : ref(v.dark));
+
+// Modules own a colour each (`module-flashcards` …). Aliases pointing at one module's token
+// (`module` = "{module-practice}") follow `data-module` instead: one block per module.
+const moduleNames = tokens.color.tokens.map((t) => t.name.match(/^module-(.+)$/)?.[1]).filter(Boolean);
+const moduleAliases = tokens.color.tokens
+  .filter((t) => isAlias(t.value))
+  .map((t) => ({ name: t.name, target: light(t.value).match(/^var\(--(.+)\)$/)[1] }))
+  .map((a) => ({ ...a, module: moduleNames.find((m) => a.target.endsWith(`-${m}`)) }))
+  .filter((a) => a.module);
+
+/** One `[data-module]` rule per module, pointing the module aliases at that module's tokens. */
+export function moduleRules() {
+  return moduleNames.map((m) => [
+    m,
+    moduleAliases.map((a) => [a.name, `var(--${a.target.slice(0, -a.module.length)}${m})`]),
+  ]);
+}
 
 const typeStyles = tokens.type.groups.flatMap((g) => g.styles);
 const fontVar = (family) => `var(--font-${family})`;
@@ -52,6 +73,12 @@ ${decl(lightVars)}
 [data-theme="dark"] {
 ${decl(darkVars)}
 }
+
+/* Current module: set data-module="${moduleNames.join('|')}" on <html> (or on a container);
+   ${moduleAliases.map((a) => `--${a.name}`).join(' and ')} follow it. Without it they point at ${moduleAliases[0]?.module}. */
+${moduleRules()
+  .map(([m, vars]) => `[data-module="${m}"] {\n${decl(vars)}\n}`)
+  .join('\n')}
 
 /* Base rules use :where() so they carry no specificity and every app style overrides them. */
 :where(body) {

@@ -1,9 +1,23 @@
 # Changelog
 
-## Unreleased
+## 3.0.0 – 2026-10-31
 
-LessonWeave logo and icons (no token values changed; the version is set when the design system
-takes the branding).
+Design system v3.0.0: LessonWeave. Breaking – the package is renamed and two tokens are removed.
+
+- **Renamed** to `lessonweave-design-system` (repo `Tesik1/lessonweave-design-system`). Apps change
+  the dependency and every import (`…/base.css`, `…/tailwind-preset`, `…/brand/*`).
+- **Removed** `brand` and `on-brand` (`bg-brand`, `text-on-brand`). Placeholder logos become the files
+  in `brand/`, avatars use `neutral-soft` with `text`, empty-state illustrations use `module`.
+- **Module colours:** `module-flashcards`, `module-practice`, `module-planner`, `module-insights` and
+  their `on-module-*`. Identity only, never text, controls, borders or status.
+- **Current module:** `module` and `on-module` are aliases. `base.css` points them at Practice and has
+  a `[data-module="…"]` rule per module; apps set `data-module` on `<html>`. The build now resolves
+  `"{token}"` values in `tokens.json` to `var(--token)`.
+- `ribbon-muted` (`#D3C8B6` / `#423C33`): the other ribbons in a module icon.
+- `brand/mark-animated.svg` and `-dark.svg`: the animated mark for page loading (4.4 s loop, still with
+  reduced motion). Colours follow the module tokens when inlined.
+
+LessonWeave logo and icons (first on the branch before the version was set):
 
 - `brand/`: horizontal and stacked logo and the mark in colour, dark, mono, mono-dark and inverse;
   module icons (light and dark) for Flashcards, Practice, Planner and Insights; app icons

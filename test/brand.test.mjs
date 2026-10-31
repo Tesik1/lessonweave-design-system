@@ -35,3 +35,12 @@ test('ribbon gaps are cut out, never painted in a background colour', () => {
     assert.ok(content.includes('mask="url(#'), `${path} has no mask`);
   }
 });
+
+test('the animated mark follows the module tokens and stands still with reduced motion', () => {
+  for (const path of ['brand/mark-animated.svg', 'brand/mark-animated-dark.svg']) {
+    const content = svgFiles()[path];
+    for (const m of ['flashcards', 'practice', 'planner', 'insights']) assert.ok(content.includes(`var(--module-${m}, #`), `${path}: ${m}`);
+    assert.match(content, /4\.4s linear infinite/);
+    assert.match(content, /prefers-reduced-motion:reduce\)\{\.lw-weave,\.lw-weave \*\{animation:none!important\}/);
+  }
+});

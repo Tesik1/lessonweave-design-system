@@ -103,7 +103,8 @@ web app manifest `name` "LessonWeave Practice", `short_name` "Practice" (Flashca
 
 1. Design system artifact v3: rename, tokens (`module-*`, `on-module-*`, `module` / `on-module`,
    `ribbon-muted`; remove `brand` / `on-brand`), rules from points 2–8, changelog entry.
-2. This repo: copy `tokens.json`, rename the package and repo, build the animated mark, release
-   `v3.0.0`.
+2. This repo (done on `tomt-lessonweave-brand-assets`, package 3.0.0): `tokens.json` v3, aliases
+   and `[data-module]` rules in the build, package renamed, animated mark. Left: rename the GitHub
+   repo, merge, tag `v3.0.0`.
 3. Practice Module and Anki generator: each in its own branch – new dependency and imports,
    `data-module`, logo, avatar, empty states, loading, tab title, manifest and icons.

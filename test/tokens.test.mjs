@@ -23,7 +23,9 @@ const resolved = (preset) => ({
   ...preset.theme.extend,
   colors: Object.fromEntries(Object.entries(preset.theme.extend.colors).map(([n, fn]) => [n, [fn(), fn({ opacityValue: '0.4' })]])),
 });
-const light = (v) => (typeof v === 'string' ? v : v.light);
+const ref = (v) => v.replace(/^\{(.+)\}$/, 'var(--$1)');
+const light = (v) => ref(typeof v === 'string' ? v : v.light);
+const isAlias = (v) => typeof v !== 'string' && /^\{.+\}$/.test(v.light);
 
 const allTokens = [
   ...tokens.color.tokens,
@@ -48,7 +50,7 @@ test('every type style is a CSS variable and a Tailwind font size', () => {
 
 test('dark theme covers every colour and every themed value', () => {
   for (const t of allTokens) {
-    if (typeof t.value === 'string') continue;
+    if (typeof t.value === 'string' || isAlias(t.value)) continue;
     assert.ok(darkBlock.includes(`--${t.name}: ${t.value.dark};`), `dark --${t.name} missing or wrong`);
   }
   for (const t of tokens.color.tokens) assert.ok(t.value.dark, `${t.name} has no dark value`);
@@ -99,4 +101,22 @@ test('generated files are up to date with tokens.json', async () => {
   const { lightVars, darkVars } = cssVariables();
   for (const [n, v] of lightVars) assert.ok(rootBlock.includes(`--${n}: ${v};`), `stale --${n}: run npm run build`);
   for (const [n, v] of darkVars) assert.ok(darkBlock.includes(`--${n}: ${v};`), `stale dark --${n}: run npm run build`);
+});
+
+test('module aliases resolve to a CSS variable and follow data-module', () => {
+  assert.ok(rootBlock.includes('--module: var(--module-practice);'));
+  assert.ok(rootBlock.includes('--on-module: var(--on-module-practice);'));
+  assert.ok(!darkBlock.includes('--module:'), 'aliases resolve where used, not repeated for dark');
+  for (const m of ['flashcards', 'practice', 'planner', 'insights']) {
+    const rule = block(`[data-module="${m}"]`);
+    assert.ok(rule.includes(`--module: var(--module-${m});`), `${m}: --module`);
+    assert.ok(rule.includes(`--on-module: var(--on-module-${m});`), `${m}: --on-module`);
+  }
+  assert.ok(!css.includes('{module'), 'no unresolved {alias} left');
+  assert.equal(ext.colors.module(), 'var(--module)');
+});
+
+test('design system v3 dropped brand and on-brand', () => {
+  assert.ok(!/--(on-)?brand:/.test(css));
+  assert.equal(ext.colors.brand, undefined);
 });

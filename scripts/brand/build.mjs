@@ -33,36 +33,42 @@ const PATCHES = [26, 66];
 
 const fmt = (n) => String(Math.round(n * 1000) / 1000);
 
+// A colour is a hex value or a `var(--token, #fallback)`, which only works as a CSS property.
+const paint = (colour) => (colour.startsWith('var(') ? `style="fill:${colour}"` : `fill="${colour}"`);
+
 /**
  * The mark as SVG elements in its own 120×120 space. `id` must be unique in the
- * document the elements end up in (masks are referenced by id).
+ * document the elements end up in (masks are referenced by id). With `animated`,
+ * every part of a ribbon (its cut in the mask included) gets the ribbon's class,
+ * so the gap moves in with the ribbon.
  */
-export function markElements(c, id) {
+export function markElements(c, id, { animated = false } = {}) {
   const under = `${id}-under`;
   const verticals = `${id}-verticals`;
+  const cls = (ribbon) => (animated ? ` class="lw-weave-${ribbon}"` : '');
   return [
     '<defs>',
     // Horizontals lose a 2.5-unit gap on each side of both verticals.
     `<mask id="${under}" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">`,
     '<rect width="120" height="120" fill="#fff"/>',
-    `<path d="${LEFT}" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/>`,
-    `<path d="${RIGHT}" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/>`,
+    `<path${cls('left')} d="${LEFT}" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/>`,
+    `<path${cls('right')} d="${RIGHT}" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/>`,
     '</mask>',
     // Verticals lose the gap lines above and below the bottom ribbon.
     `<mask id="${verticals}" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">`,
     '<rect width="120" height="120" fill="#fff"/>',
-    `<path d="${PATCHES.map((x) => `M${x + 2} 68.5H${x + 26}M${x + 2} 91.5H${x + 26}`).join('')}" stroke="#000" stroke-width="3"/>`,
+    `<path${cls('bottom')} d="${PATCHES.map((x) => `M${x + 2} 68.5H${x + 26}M${x + 2} 91.5H${x + 26}`).join('')}" stroke="#000" stroke-width="3"/>`,
     '</mask>',
     '</defs>',
     `<g mask="url(#${under})">`,
-    `<path d="${TOP}" fill="${c.top}"/>`,
-    `<path d="${BOTTOM}" fill="${c.bottom}"/>`,
+    `<path${cls('top')} d="${TOP}" ${paint(c.top)}/>`,
+    `<path${cls('bottom')} d="${BOTTOM}" ${paint(c.bottom)}/>`,
     '</g>',
     `<g mask="url(#${verticals})">`,
-    `<path d="${LEFT}" fill="${c.left}"/>`,
-    `<path d="${RIGHT}" fill="${c.right}"/>`,
+    `<path${cls('left')} d="${LEFT}" ${paint(c.left)}/>`,
+    `<path${cls('right')} d="${RIGHT}" ${paint(c.right)}/>`,
     '</g>',
-    ...PATCHES.map((x) => `<rect x="${x}" y="70" width="28" height="20" fill="${c.bottom}"/>`),
+    ...PATCHES.map((x) => `<rect${cls('bottom')} x="${x}" y="70" width="28" height="20" ${paint(c.bottom)}/>`),
   ];
 }
 
@@ -124,6 +130,44 @@ export function mark(c, id, size = 120) {
 }
 
 /**
+ * Animated mark for loading (board "Animace loga", 4.4 s loop): the top ribbon slides in,
+ * then left, right and the bottom one over them; at the end the mark fades out and starts
+ * again. With reduced motion it stands still. Ribbons use the module colour tokens with
+ * hex fallbacks, so an inlined mark follows the theme and an <img> uses the fallbacks.
+ */
+const WEAVE_KEYFRAMES = [
+  // ribbon, from, start %, end %
+  ['top', 'translateX(-36px)', 4.545, 17.045],
+  ['left', 'translateY(-36px)', 9.091, 21.591],
+  ['right', 'translateY(-36px)', 15.909, 28.409],
+  ['bottom', 'translateX(36px)', 21.591, 34.091],
+];
+const weaveStyle = [
+  '<style>',
+  ...WEAVE_KEYFRAMES.map(
+    ([r, from, start, end]) =>
+      `@keyframes lw-weave-${r}{0%,${start}%{opacity:0;transform:${from};animation-timing-function:cubic-bezier(.25,.8,.25,1)}${end}%,100%{opacity:1;transform:none}}` +
+      `.lw-weave-${r}{animation:lw-weave-${r} 4.4s linear infinite both}`,
+  ),
+  '@keyframes lw-weave-fade{0%,81.818%{opacity:1}89.773%,100%{opacity:0}}',
+  '.lw-weave{animation:lw-weave-fade 4.4s linear infinite both}',
+  '@media (prefers-reduced-motion:reduce){.lw-weave,.lw-weave *{animation:none!important}}',
+  '</style>',
+];
+
+export function markAnimated(c, id, size = 120) {
+  const tokenised = Object.fromEntries(
+    Object.entries(modules).map(([module, ribbon]) => [ribbon, `var(--module-${module}, ${c[ribbon]})`]),
+  );
+  return svg(size, size, 'LessonWeave', [
+    ...weaveStyle,
+    '<g class="lw-weave">',
+    ...placeMark(0, 0, size, markElements(tokenised, id, { animated: true })),
+    '</g>',
+  ]);
+}
+
+/**
  * App icon: the mark on a tile. `markRatio` is the mark size against the tile,
  * `radius` the corner radius against the tile (0 = square, full bleed).
  */
@@ -178,6 +222,8 @@ export function svgFiles() {
     files[`brand/logo-vertical-${name}.svg`] = logoVertical(c, `lw-logo-vertical-${name}`);
     files[`brand/mark-${name}.svg`] = mark(c, `lw-mark-${name}`);
   }
+  files['brand/mark-animated.svg'] = markAnimated(variants.color, 'lw-mark-animated');
+  files['brand/mark-animated-dark.svg'] = markAnimated(variants.dark, 'lw-mark-animated-dark');
   for (const module of Object.keys(modules)) {
     for (const theme of ['light', 'dark']) {
       files[`brand/modules/${module}-${theme}.svg`] = mark(moduleColors(module, theme), `lw-module-${module}-${theme}`);

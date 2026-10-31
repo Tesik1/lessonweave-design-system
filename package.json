@@ -1,13 +1,13 @@
 {
-  "name": "teachers-app-design-system",
-  "version": "2.3.0",
-  "description": "Design tokens of the teachers app design system (Practice Module, Anki card generator): tokens.json, base.css and a Tailwind preset.",
+  "name": "lessonweave-design-system",
+  "version": "3.0.0",
+  "description": "Design tokens and brand files of the LessonWeave design system (Flashcards, Practice and the modules that follow): tokens.json, base.css, a Tailwind preset and the logo.",
   "private": true,
   "type": "module",
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Tesik1/teachers-app-design-system.git"
+    "url": "git+https://github.com/Tesik1/lessonweave-design-system.git"
   },
   "files": [
     "tokens.json",
