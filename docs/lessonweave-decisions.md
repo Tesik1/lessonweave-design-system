@@ -85,6 +85,25 @@ page's `h1` (text "LessonWeave" for screen readers), the tagline below it.
   short waits would only flash.
 - To build: the animated mark as a file or component with the board's keyframes (4.4 s loop).
 
-## Open
+## 8 – names (2026-10-31)
 
-- 8 – module names (Flashcards = Anki generator?) and renaming the design system and package.
+**Modules:** Flashcards = today's Anki generator (mustard, top ribbon), Practice = today's Practice
+Module (teal, left ribbon). Planner and Insights are future modules. The header shows the module
+name instead of "Anki Generator" and "Practice Module".
+
+**Design system:** renamed everywhere with the v3 release – the artifact ("LessonWeave design
+system"), the GitHub repo and the package (`lessonweave-design-system`). GitHub redirects the old
+repo URL, but both apps change the dependency and every import (`…/base.css`, `…/tailwind-preset`,
+`…/brand/*`) in their own branch.
+
+**App name:** browser tab "Page – Module – LessonWeave" (e.g. "My sets – Practice – LessonWeave");
+web app manifest `name` "LessonWeave Practice", `short_name` "Practice" (Flashcards likewise).
+
+## Next
+
+1. Design system artifact v3: rename, tokens (`module-*`, `on-module-*`, `module` / `on-module`,
+   `ribbon-muted`; remove `brand` / `on-brand`), rules from points 2–8, changelog entry.
+2. This repo: copy `tokens.json`, rename the package and repo, build the animated mark, release
+   `v3.0.0`.
+3. Practice Module and Anki generator: each in its own branch – new dependency and imports,
+   `data-module`, logo, avatar, empty states, loading, tab title, manifest and icons.
