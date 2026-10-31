@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.1.0 – 2026-10-31
+
+- **Flashcards amber:** `module-flashcards` light is `#D48A19` (was `#E3B23C`, 1.9:1 on `raised`, now
+  2.75:1), so the top ribbon, the favicon and the module's fills no longer fade on light
+  backgrounds. Dark stays `#EBC25A`. Text on it stays `#221E19` (5.9:1). Logo, mark, app icons and
+  favicon are rebuilt with it.
+- **Header lockups** `brand/lockups/{module}-{light,dark}.svg`: mark, wordmark and under it the module
+  name on a tag in the module colour. They replace the module icon and name beside the logo.
+- Module names are outlined from Outfit 600 into `brand/src/modules.json`.
+
 ## 3.0.0 – 2026-10-31
 
 Design system v3.0.0: LessonWeave. Breaking – the package is renamed and two tokens are removed.

@@ -23,7 +23,7 @@
 </mask>
 </defs>
 <g mask="url(#lw-mark-animated-under)">
-<path class="lw-weave-top" d="M10 30H110L103 40L110 50H10L17 40Z" style="fill:var(--module-flashcards, #E3B23C)"/>
+<path class="lw-weave-top" d="M10 30H110L103 40L110 50H10L17 40Z" style="fill:var(--module-flashcards, #D48A19)"/>
 <path class="lw-weave-bottom" d="M10 70H110L103 80L110 90H10L17 80Z" style="fill:var(--module-insights, #4A4DB0)"/>
 </g>
 <g mask="url(#lw-mark-animated-verticals)">

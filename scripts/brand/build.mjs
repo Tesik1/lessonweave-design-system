@@ -1,5 +1,6 @@
 // Builds the LessonWeave logo files in brand/ from the mark geometry below and the
-// outlined wordmark (brand/src/wordmark.json, from outline-wordmark.py).
+// outlined wordmark and module names (brand/src/wordmark.json and modules.json, from
+// outline-wordmark.py).
 // Run with `npm run build:brand`. SVGs are pure text; the PNG and ICO icons are
 // rendered with @resvg/resvg-js. The output is committed.
 //
@@ -11,10 +12,13 @@ import { dirname, join } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const wordmark = JSON.parse(readFileSync(join(root, 'brand', 'src', 'wordmark.json'), 'utf8'));
+const moduleNames = JSON.parse(readFileSync(join(root, 'brand', 'src', 'modules.json'), 'utf8'));
+const colorTokens = JSON.parse(readFileSync(join(root, 'tokens.json'), 'utf8')).color.tokens;
+const colorToken = (name) => colorTokens.find((t) => t.name === name).value;
 
 /** Colours of each variant: ribbons top, left, right, bottom, then "Lesson" and "Weave". */
 export const variants = {
-  color: { top: '#E3B23C', left: '#2F7A78', right: '#8C4A78', bottom: '#4A4DB0', lesson: '#221E19', weave: '#4A4DB0' },
+  color: { top: '#D48A19', left: '#2F7A78', right: '#8C4A78', bottom: '#4A4DB0', lesson: '#221E19', weave: '#4A4DB0' },
   dark: { top: '#EBC25A', left: '#74C9C7', right: '#C48AB5', bottom: '#A3A6F2', lesson: '#EFE9DF', weave: '#A3A6F2' },
   mono: { top: '#221E19', left: '#221E19', right: '#221E19', bottom: '#221E19', lesson: '#221E19', weave: '#221E19' },
   // Mono on a dark background, in the dark theme's text colour.
@@ -80,7 +84,8 @@ const baselineInBox = (F) => (F * (1 + (wordmark.ascender + wordmark.descender) 
 const wordWidth = (F) => (F * wordmark.advance) / em;
 
 function wordElements(c, x, baseline, F) {
-  const s = fmt(F / em);
+  // A scale needs more digits than a coordinate: 0.0245 rounded to 0.025 is 2 % too wide.
+  const s = String(Math.round((F / em) * 1e6) / 1e6);
   return [
     `<g transform="translate(${fmt(x)} ${fmt(baseline)}) scale(${s})">`,
     `<path d="${wordmark.paths.lesson}" fill="${c.lesson}"/>`,
@@ -214,6 +219,41 @@ export const icons = {
   'favicon-16': { size: 16, background: CREAM, colors: variants.color, markRatio: 14 / 16, radius: 3 / 16 },
 };
 
+/**
+ * Header lockup (variant D2): the mark, the wordmark beside it and under the wordmark the
+ * module name on a tag in the module colour. Drawn at its header size, 40 px high; on a
+ * phone the app shows it at 36 px. Module names are Outfit 600 outlined like the wordmark.
+ */
+const LOCKUP = {
+  height: 40, // = the mark
+  gap: 10, // mark to the text column
+  word: 24.5, // wordmark font size: its capitals fill the top 17 px
+  tagTop: 22,
+  tagHeight: 18,
+  tagRadius: 5,
+  tagPadding: 8,
+  tagFont: 12,
+};
+
+export function lockup(module, theme, id) {
+  const c = theme === 'dark' ? variants.dark : variants.color;
+  const name = moduleNames.modules[module];
+  const L = LOCKUP;
+  const x = L.height + L.gap;
+  const capHeight = (F) => (F * 703) / em; // top of the L of the wordmark
+  const tagWidth = (name.advance * L.tagFont) / moduleNames.unitsPerEm + 2 * L.tagPadding;
+  const width = x + Math.max(wordWidth(L.word), tagWidth);
+  const textBaseline = L.tagTop + L.tagHeight / 2 + capHeight(L.tagFont) / 2;
+  return svg(width, L.height, `LessonWeave ${name.text}`, [
+    ...placeMark(0, 0, L.height, markElements(c, id)),
+    ...wordElements(c, x, capHeight(L.word), L.word),
+    `<rect x="${fmt(x)}" y="${L.tagTop}" width="${fmt(tagWidth)}" height="${L.tagHeight}" rx="${L.tagRadius}" fill="${colorToken(`module-${module}`)[theme]}"/>`,
+    `<g transform="translate(${fmt(x + L.tagPadding)} ${fmt(textBaseline)}) scale(${L.tagFont / moduleNames.unitsPerEm})">`,
+    `<path d="${name.path}" fill="${colorToken(`on-module-${module}`)[theme]}"/>`,
+    '</g>',
+  ]);
+}
+
 /** Every SVG file in brand/, as { path: content }. */
 export function svgFiles() {
   const files = {};
@@ -227,6 +267,11 @@ export function svgFiles() {
   for (const module of Object.keys(modules)) {
     for (const theme of ['light', 'dark']) {
       files[`brand/modules/${module}-${theme}.svg`] = mark(moduleColors(module, theme), `lw-module-${module}-${theme}`);
+    }
+  }
+  for (const module of Object.keys(modules)) {
+    for (const theme of ['light', 'dark']) {
+      files[`brand/lockups/${module}-${theme}.svg`] = lockup(module, theme, `lw-lockup-${module}-${theme}`);
     }
   }
   for (const [name, spec] of Object.entries(icons)) {
@@ -262,6 +307,7 @@ async function main() {
   const files = svgFiles();
   mkdirSync(join(root, 'brand', 'icons'), { recursive: true });
   mkdirSync(join(root, 'brand', 'modules'), { recursive: true });
+  mkdirSync(join(root, 'brand', 'lockups'), { recursive: true });
   for (const [path, content] of Object.entries(files)) writeFileSync(join(root, path), content);
 
   const png = (svgText, width) => new Resvg(svgText, { fitTo: { mode: 'width', value: width } }).render().asPng();

@@ -42,11 +42,11 @@ fail as text on cream anyway.
 
 | Token | Light | Dark |
 |---|---|---|
-| `module-flashcards` | `#E3B23C` | `#EBC25A` |
+| `module-flashcards` | `#D48A19` (was `#E3B23C`, see point 9) | `#EBC25A` |
 | `module-practice` | `#2F7A78` | `#74C9C7` |
 | `module-planner` | `#8C4A78` | `#C48AB5` |
 | `module-insights` | `#4A4DB0` | `#A3A6F2` |
-| `on-module-flashcards` | `#221E19` (8.4:1) | `#1A1814` (10.5:1) |
+| `on-module-flashcards` | `#221E19` (5.9:1) | `#1A1814` (10.5:1) |
 | `on-module-practice` | `#FFFFFF` (5.0:1) | `#1A1814` (9.2:1) |
 | `on-module-planner` | `#FFFFFF` (6.2:1) | `#1A1814` (6.5:1) |
 | `on-module-insights` | `#FFFFFF` (7.0:1) | `#1A1814` (7.8:1) |
@@ -98,6 +98,24 @@ repo URL, but both apps change the dependency and every import (`…/base.css`, 
 
 **App name:** browser tab "Page – Module – LessonWeave" (e.g. "My sets – Practice – LessonWeave");
 web app manifest `name` "LessonWeave Practice", `short_name` "Practice" (Flashcards likewise).
+
+## 9 – header lockup and a darker Flashcards amber (2026-10-31, v3.1.0)
+
+**Problem:** in the apps the header showed the logo, a divider, the module icon and the module
+name. The module icon is small and only one ribbon is in colour, so it did not stand out, and two
+marks side by side looked crowded. The mustard `#E3B23C` faded on light backgrounds (1.9:1 on
+`raised`), in the favicon and the small logo as much as in the header.
+
+**Decision:** variant D2 from the header proposals canvas
+(https://claude.ai/artifact/LvGRGSUAjNb7rutG41c9CV): the mark, the wordmark beside it and under
+the wordmark the module name on a tag in the module colour, `on-module` text. One SVG per module
+and theme in `brand/lockups/`, with the module name outlined from Outfit 600 like the wordmark.
+The module icon and the coloured text are out of the header.
+
+**Flashcards amber:** the TEST badge hue (`warning-fill` `#E8A33A`) darkened to 2.75:1 on
+`raised`: `#D48A19`, everywhere the light amber was (token, top ribbon, logo, icons, favicon).
+Dark stays `#EBC25A`. As a graphic it is still under the 3:1 for UI shapes, a deliberate choice
+for a warmer amber; text on it (`#221E19`) is 5.9:1.
 
 ## Next
 
