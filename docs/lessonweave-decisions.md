@@ -66,7 +66,25 @@ Note: a mustard shape on cream is only 1.7:1 – fine for decoration (illustrati
 - **New logo variant `mono-dark`** in the dark theme's text colour `#EFE9DF` (14.7:1 on night), the
   mirror of `mono`. `inverse` (white) stays for coloured fills.
 
+## 7 – logo in the app, loading (2026-10-31)
+
+**Header (60 px):** the horizontal logo 32 px high (166 px wide; clear space fits), then a 1 px
+divider and the module: module icon 20 px + module name in `heading-3`. The logo links to the
+start page. On a phone only the mark, 32 px. In the merged app the module part becomes the module
+switcher.
+
+**Sign-in and legal pages:** the stacked logo, mark 67 px and wordmark 32 px (192 px wide), as the
+page's `h1` (text "LessonWeave" for screen readers), the tagline below it.
+
+**Loading:**
+
+- A whole page or panel loading (app start, sign-in, student page, dashboard, editor, settings) →
+  the animated mark, 40 px, with a text such as "Loading…" beside it. It appears after 300 ms, so
+  fast loads do not flash. With reduced motion it stands still (the board's CSS already does this).
+- Inside buttons, rows and dialogs → the spinner (`loader-2`) as today; the weave does not fit and
+  short waits would only flash.
+- To build: the animated mark as a file or component with the board's keyframes (4.4 s loop).
+
 ## Open
 
-- 7 – logo size in the header and on sign-in; animated loader vs spinner.
 - 8 – module names (Flashcards = Anki generator?) and renaming the design system and package.
