@@ -1,4 +1,4 @@
-/* Generated from tokens.json (design system "Teachers app design system" v2, package 2.3.0) by scripts/build.mjs. Do not edit. */
+/* Generated from tokens.json (design system "LessonWeave design system" v3, package 3.0.0) by scripts/build.mjs. Do not edit. */
 
 :root {
   --surface: #F4EEE3;
@@ -25,8 +25,17 @@
   --danger-soft: #F7E7E0;
   --on-danger: #FFFFFF;
   --focus: #1F2266;
-  --brand: #F6C040;
-  --on-brand: #4A3000;
+  --module-flashcards: #E3B23C;
+  --module-practice: #2F7A78;
+  --module-planner: #8C4A78;
+  --module-insights: #4A4DB0;
+  --on-module-flashcards: #221E19;
+  --on-module-practice: #FFFFFF;
+  --on-module-planner: #FFFFFF;
+  --on-module-insights: #FFFFFF;
+  --module: var(--module-practice);
+  --on-module: var(--on-module-practice);
+  --ribbon-muted: #D3C8B6;
   --space-4: 4px;
   --space-8: 8px;
   --space-12: 12px;
@@ -93,9 +102,35 @@
   --danger-soft: #3e2520;
   --on-danger: #1A1814;
   --focus: #EFE9DF;
-  --brand: #7A621F;
-  --on-brand: #FFF4DE;
+  --module-flashcards: #EBC25A;
+  --module-practice: #74C9C7;
+  --module-planner: #C48AB5;
+  --module-insights: #A3A6F2;
+  --on-module-flashcards: #1A1814;
+  --on-module-practice: #1A1814;
+  --on-module-planner: #1A1814;
+  --on-module-insights: #1A1814;
+  --ribbon-muted: #423C33;
   --shadow-md: 0 6px 20px rgba(0,0,0,0.45);
+}
+
+/* Current module: set data-module="flashcards|practice|planner|insights" on <html> (or on a container);
+   --module and --on-module follow it. Without it they point at practice. */
+[data-module="flashcards"] {
+  --module: var(--module-flashcards);
+  --on-module: var(--on-module-flashcards);
+}
+[data-module="practice"] {
+  --module: var(--module-practice);
+  --on-module: var(--on-module-practice);
+}
+[data-module="planner"] {
+  --module: var(--module-planner);
+  --on-module: var(--on-module-planner);
+}
+[data-module="insights"] {
+  --module: var(--module-insights);
+  --on-module: var(--on-module-insights);
 }
 
 /* Base rules use :where() so they carry no specificity and every app style overrides them. */

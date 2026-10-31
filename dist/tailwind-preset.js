@@ -1,4 +1,4 @@
-// Generated from tokens.json (design system "Teachers app design system" v2, package 2.3.0) by scripts/build.mjs. Do not edit.
+// Generated from tokens.json (design system "LessonWeave design system" v3, package 3.0.0) by scripts/build.mjs. Do not edit.
 
 // Colour from a CSS variable with opacity support (`bg-accent/50`). Without an opacity
 // (Tailwind then passes undefined or `var(--tw-bg-opacity)`) the bare variable is kept.
@@ -35,8 +35,17 @@ export default {
         "danger-soft": color("danger-soft"),
         "on-danger": color("on-danger"),
         "focus": color("focus"),
-        "brand": color("brand"),
-        "on-brand": color("on-brand")
+        "module-flashcards": color("module-flashcards"),
+        "module-practice": color("module-practice"),
+        "module-planner": color("module-planner"),
+        "module-insights": color("module-insights"),
+        "on-module-flashcards": color("on-module-flashcards"),
+        "on-module-practice": color("on-module-practice"),
+        "on-module-planner": color("on-module-planner"),
+        "on-module-insights": color("on-module-insights"),
+        "module": color("module"),
+        "on-module": color("on-module"),
+        "ribbon-muted": color("ribbon-muted")
       },
       "borderColor": {
         "DEFAULT": "var(--border)"
