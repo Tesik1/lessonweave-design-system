@@ -36,11 +36,20 @@ test('ribbon gaps are cut out, never painted in a background colour', () => {
   }
 });
 
+test('the bottom ribbon is one shape over the verticals, not patches (no hairlines)', () => {
+  for (const [path, content] of Object.entries(svgFiles())) {
+    assert.ok(!/<rect[^>]* y="70" width="28" height="20"/.test(content), `${path} still has patches`);
+  }
+});
+
 test('the animated mark follows the module tokens and stands still with reduced motion', () => {
   for (const path of ['brand/mark-animated.svg', 'brand/mark-animated-dark.svg']) {
     const content = svgFiles()[path];
     for (const m of ['flashcards', 'practice', 'planner', 'insights']) assert.ok(content.includes(`var(--module-${m}, #`), `${path}: ${m}`);
-    assert.match(content, /4\.4s linear infinite/);
+    assert.match(content, /\.lw-weave\{animation:lw-weave-fade 4s linear infinite both\}/);
+    // Faded out at 98.75 % (3.95 s), the top ribbon starts at 5 % (0.2 s): 0.25 s empty
+    assert.match(content, /lw-weave-fade\{0%,90%\{opacity:1\}98\.75%,100%\{opacity:0\}\}/);
+    assert.match(content, /@keyframes lw-weave-top\{0%,5%\{/);
     assert.match(content, /prefers-reduced-motion:reduce\)\{\.lw-weave,\.lw-weave \*\{animation:none!important\}/);
   }
 });

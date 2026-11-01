@@ -14,13 +14,11 @@
 </defs>
 <g mask="url(#lw-mark-mono-dark-under)">
 <path d="M10 30H110L103 40L110 50H10L17 40Z" fill="#EFE9DF"/>
-<path d="M10 70H110L103 80L110 90H10L17 80Z" fill="#EFE9DF"/>
 </g>
 <g mask="url(#lw-mark-mono-dark-verticals)">
 <path d="M30 10L40 17L50 10V110L40 103L30 110Z" fill="#EFE9DF"/>
 <path d="M70 10L80 17L90 10V110L80 103L70 110Z" fill="#EFE9DF"/>
 </g>
-<rect x="26" y="70" width="28" height="20" fill="#EFE9DF"/>
-<rect x="66" y="70" width="28" height="20" fill="#EFE9DF"/>
+<path d="M10 70H110L103 80L110 90H10L17 80Z" fill="#EFE9DF"/>
 </g>
 </svg>

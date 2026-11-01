@@ -129,7 +129,11 @@ A whole page or panel loading (app start, sign-in, student page, dashboard, edit
 animated mark at 40 px with a text such as "Loading…" beside it, and only after 300 ms, so fast
 loads do not flash. Inside buttons, rows and dialogs the spinner (`loader-2`) stays.
 
-The ribbons weave in one after another and the mark fades out and starts again (4.4 s loop). With
+A wait for the AI of unknown length (reading photos) shows the same mark at once, since a click
+started it, with the usual time and Cancel under it; a progress bar is only for known steps.
+
+The ribbons weave in one after another and the mark fades out and starts again (4 s loop; the empty
+moment before the next loop is 0.25 s, about the pause between two ribbons). With
 `prefers-reduced-motion: reduce` it stands still. Its colours are `var(--module-*, #hex)`:
 
 - Inlined (for example imported with Vite's `?raw`), it follows the theme through `base.css`, so
