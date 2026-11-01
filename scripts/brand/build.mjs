@@ -31,9 +31,9 @@ const TOP = 'M10 30H110L103 40L110 50H10L17 40Z';
 const BOTTOM = 'M10 70H110L103 80L110 90H10L17 80Z';
 const LEFT = 'M30 10L40 17L50 10V110L40 103L30 110Z';
 const RIGHT = 'M70 10L80 17L90 10V110L80 103L70 110Z';
-// The bottom ribbon passes over both vertical ribbons: these patches redraw it there,
-// and the 3-unit lines above and below each patch are the gaps cut into the verticals.
-const PATCHES = [26, 66];
+// The bottom ribbon is drawn over both vertical ribbons; the 3-unit lines above and
+// below it, across each vertical, are the gaps cut into the verticals.
+const CROSSINGS = [26, 66];
 
 const fmt = (n) => String(Math.round(n * 1000) / 1000);
 
@@ -52,7 +52,7 @@ export function markElements(c, id, { animated = false } = {}) {
   const cls = (ribbon) => (animated ? ` class="lw-weave-${ribbon}"` : '');
   return [
     '<defs>',
-    // Horizontals lose a 2.5-unit gap on each side of both verticals.
+    // The top ribbon loses a 2.5-unit gap on each side of both verticals.
     `<mask id="${under}" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">`,
     '<rect width="120" height="120" fill="#fff"/>',
     `<path${cls('left')} d="${LEFT}" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/>`,
@@ -61,18 +61,18 @@ export function markElements(c, id, { animated = false } = {}) {
     // Verticals lose the gap lines above and below the bottom ribbon.
     `<mask id="${verticals}" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">`,
     '<rect width="120" height="120" fill="#fff"/>',
-    `<path${cls('bottom')} d="${PATCHES.map((x) => `M${x + 2} 68.5H${x + 26}M${x + 2} 91.5H${x + 26}`).join('')}" stroke="#000" stroke-width="3"/>`,
+    `<path${cls('bottom')} d="${CROSSINGS.map((x) => `M${x + 2} 68.5H${x + 26}M${x + 2} 91.5H${x + 26}`).join('')}" stroke="#000" stroke-width="3"/>`,
     '</mask>',
     '</defs>',
     `<g mask="url(#${under})">`,
     `<path${cls('top')} d="${TOP}" ${paint(c.top)}/>`,
-    `<path${cls('bottom')} d="${BOTTOM}" ${paint(c.bottom)}/>`,
     '</g>',
     `<g mask="url(#${verticals})">`,
     `<path${cls('left')} d="${LEFT}" ${paint(c.left)}/>`,
     `<path${cls('right')} d="${RIGHT}" ${paint(c.right)}/>`,
     '</g>',
-    ...PATCHES.map((x) => `<rect${cls('bottom')} x="${x}" y="70" width="28" height="20" ${paint(c.bottom)}/>`),
+    // One shape on top, not patches over a masked ribbon: patch edges showed as hairlines.
+    `<path${cls('bottom')} d="${BOTTOM}" ${paint(c.bottom)}/>`,
   ];
 }
 
@@ -135,27 +135,32 @@ export function mark(c, id, size = 120) {
 }
 
 /**
- * Animated mark for loading (board "Animace loga", 4.4 s loop): the top ribbon slides in,
+ * Animated mark for loading (board "Animace loga", 4 s loop): the top ribbon slides in,
  * then left, right and the bottom one over them; at the end the mark fades out and starts
- * again. With reduced motion it stands still. Ribbons use the module colour tokens with
+ * again after about the pause between two ribbons, so the loop reads as one motion. With reduced motion it stands still. Ribbons use the module colour tokens with
  * hex fallbacks, so an inlined mark follows the theme and an <img> uses the fallbacks.
  */
+const WEAVE_LOOP = 4; // s
+const WEAVE_SLIDE = 0.55; // s, one ribbon sliding in
 const WEAVE_KEYFRAMES = [
-  // ribbon, from, start %, end %
-  ['top', 'translateX(-36px)', 4.545, 17.045],
-  ['left', 'translateY(-36px)', 9.091, 21.591],
-  ['right', 'translateY(-36px)', 15.909, 28.409],
-  ['bottom', 'translateX(36px)', 21.591, 34.091],
+  // ribbon, from, start (s)
+  ['top', 'translateX(-36px)', 0.2],
+  ['left', 'translateY(-36px)', 0.4],
+  ['right', 'translateY(-36px)', 0.7],
+  ['bottom', 'translateX(36px)', 0.95],
 ];
+// Fade out 3.6–3.95 s; with the top ribbon's 0.2 s the empty gap is 0.25 s.
+const WEAVE_FADE = [3.6, 3.95];
+const pct = (t) => `${fmt((t / WEAVE_LOOP) * 100)}%`;
 const weaveStyle = [
   '<style>',
   ...WEAVE_KEYFRAMES.map(
-    ([r, from, start, end]) =>
-      `@keyframes lw-weave-${r}{0%,${start}%{opacity:0;transform:${from};animation-timing-function:cubic-bezier(.25,.8,.25,1)}${end}%,100%{opacity:1;transform:none}}` +
-      `.lw-weave-${r}{animation:lw-weave-${r} 4.4s linear infinite both}`,
+    ([r, from, start]) =>
+      `@keyframes lw-weave-${r}{0%,${pct(start)}{opacity:0;transform:${from};animation-timing-function:cubic-bezier(.25,.8,.25,1)}${pct(start + WEAVE_SLIDE)},100%{opacity:1;transform:none}}` +
+      `.lw-weave-${r}{animation:lw-weave-${r} ${WEAVE_LOOP}s linear infinite both}`,
   ),
-  '@keyframes lw-weave-fade{0%,81.818%{opacity:1}89.773%,100%{opacity:0}}',
-  '.lw-weave{animation:lw-weave-fade 4.4s linear infinite both}',
+  `@keyframes lw-weave-fade{0%,${pct(WEAVE_FADE[0])}{opacity:1}${pct(WEAVE_FADE[1])},100%{opacity:0}}`,
+  `.lw-weave{animation:lw-weave-fade ${WEAVE_LOOP}s linear infinite both}`,
   '@media (prefers-reduced-motion:reduce){.lw-weave,.lw-weave *{animation:none!important}}',
   '</style>',
 ];

@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="LessonWeave">
 <title>LessonWeave</title>
 <style>
-@keyframes lw-weave-top{0%,4.545%{opacity:0;transform:translateX(-36px);animation-timing-function:cubic-bezier(.25,.8,.25,1)}17.045%,100%{opacity:1;transform:none}}.lw-weave-top{animation:lw-weave-top 4.4s linear infinite both}
-@keyframes lw-weave-left{0%,9.091%{opacity:0;transform:translateY(-36px);animation-timing-function:cubic-bezier(.25,.8,.25,1)}21.591%,100%{opacity:1;transform:none}}.lw-weave-left{animation:lw-weave-left 4.4s linear infinite both}
-@keyframes lw-weave-right{0%,15.909%{opacity:0;transform:translateY(-36px);animation-timing-function:cubic-bezier(.25,.8,.25,1)}28.409%,100%{opacity:1;transform:none}}.lw-weave-right{animation:lw-weave-right 4.4s linear infinite both}
-@keyframes lw-weave-bottom{0%,21.591%{opacity:0;transform:translateX(36px);animation-timing-function:cubic-bezier(.25,.8,.25,1)}34.091%,100%{opacity:1;transform:none}}.lw-weave-bottom{animation:lw-weave-bottom 4.4s linear infinite both}
-@keyframes lw-weave-fade{0%,81.818%{opacity:1}89.773%,100%{opacity:0}}
-.lw-weave{animation:lw-weave-fade 4.4s linear infinite both}
+@keyframes lw-weave-top{0%,5%{opacity:0;transform:translateX(-36px);animation-timing-function:cubic-bezier(.25,.8,.25,1)}18.75%,100%{opacity:1;transform:none}}.lw-weave-top{animation:lw-weave-top 4s linear infinite both}
+@keyframes lw-weave-left{0%,10%{opacity:0;transform:translateY(-36px);animation-timing-function:cubic-bezier(.25,.8,.25,1)}23.75%,100%{opacity:1;transform:none}}.lw-weave-left{animation:lw-weave-left 4s linear infinite both}
+@keyframes lw-weave-right{0%,17.5%{opacity:0;transform:translateY(-36px);animation-timing-function:cubic-bezier(.25,.8,.25,1)}31.25%,100%{opacity:1;transform:none}}.lw-weave-right{animation:lw-weave-right 4s linear infinite both}
+@keyframes lw-weave-bottom{0%,23.75%{opacity:0;transform:translateX(36px);animation-timing-function:cubic-bezier(.25,.8,.25,1)}37.5%,100%{opacity:1;transform:none}}.lw-weave-bottom{animation:lw-weave-bottom 4s linear infinite both}
+@keyframes lw-weave-fade{0%,90%{opacity:1}98.75%,100%{opacity:0}}
+.lw-weave{animation:lw-weave-fade 4s linear infinite both}
 @media (prefers-reduced-motion:reduce){.lw-weave,.lw-weave *{animation:none!important}}
 </style>
 <g class="lw-weave">
@@ -24,14 +24,12 @@
 </defs>
 <g mask="url(#lw-mark-animated-under)">
 <path class="lw-weave-top" d="M10 30H110L103 40L110 50H10L17 40Z" style="fill:var(--module-flashcards, #D48A19)"/>
-<path class="lw-weave-bottom" d="M10 70H110L103 80L110 90H10L17 80Z" style="fill:var(--module-insights, #4A4DB0)"/>
 </g>
 <g mask="url(#lw-mark-animated-verticals)">
 <path class="lw-weave-left" d="M30 10L40 17L50 10V110L40 103L30 110Z" style="fill:var(--module-practice, #2F7A78)"/>
 <path class="lw-weave-right" d="M70 10L80 17L90 10V110L80 103L70 110Z" style="fill:var(--module-planner, #8C4A78)"/>
 </g>
-<rect class="lw-weave-bottom" x="26" y="70" width="28" height="20" style="fill:var(--module-insights, #4A4DB0)"/>
-<rect class="lw-weave-bottom" x="66" y="70" width="28" height="20" style="fill:var(--module-insights, #4A4DB0)"/>
+<path class="lw-weave-bottom" d="M10 70H110L103 80L110 90H10L17 80Z" style="fill:var(--module-insights, #4A4DB0)"/>
 </g>
 </g>
 </svg>

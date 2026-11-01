@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.1.1 – 2026-11-01
+
+- **Animated mark:** 4 s loop (was 4.4 s). After the fade the next loop starts in 0.25 s, about the
+  pause between two ribbons, instead of an empty second, so the loop reads as one motion.
+- **Mark, logos, lockups and icons:** the bottom ribbon is one shape drawn over the vertical ribbons
+  instead of a masked ribbon with two patches; the patch edges showed as light hairlines across the
+  bottom ribbon at small sizes. The look is otherwise the same.
+- README: a wait for the AI of unknown length shows the animated mark at once, with the usual time
+  and Cancel under it.
+
 ## 3.1.0 – 2026-10-31
 
 - **Flashcards amber:** `module-flashcards` light is `#D48A19` (was `#E3B23C`, 1.9:1 on `raised`, now
