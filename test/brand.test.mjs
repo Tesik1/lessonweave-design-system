@@ -77,7 +77,8 @@ test('logo motion: every file follows the theme tokens and stands still with red
       `${path}: reduced motion`,
     );
     // Only this motion's classes, so two inlined motions never share keyframes
-    for (const [, cls] of content.matchAll(/class="(lw-[a-z]+)/g)) assert.ok(cls === `lw-${name}` || cls.startsWith(`lw-${name}-`), `${path}: ${cls}`);
+    const own = new RegExp(`^lw-${name}(-(top|left|right|bottom)(-fade|-clip)?|-word-clip)?$`);
+    for (const [, cls] of content.matchAll(/class="([^"]+)"/g)) assert.match(cls, own, `${path}: ${cls}`);
   }
   // Dark files fall back to the dark ribbon colours
   assert.ok(files['brand/mark-relay-dark.svg'].includes('var(--module-flashcards, #EBC25A)'));

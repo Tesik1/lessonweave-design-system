@@ -171,11 +171,13 @@ reduce`. Inlined, give each copy unique mask and clip ids by replacing the file'
   website's hero and the first screen of an app start. Once per visit, never in a loop; the content
   beside it does not wait for it. It plays when the file loads, so it works as `<img>` too (light
   and dark file); to play it again, insert it again.
-- **Beat** (`mark-beat.svg`, `lockups/{module}-beat.svg`, 0.7 s): one beat of the loom when the
-  pointer or keyboard focus reaches the link or button around the logo (`a:hover`,
-  `a:focus-visible`), or when the app sets the class `lw-beat-run` on it or an ancestor (for a tap;
-  remove it after 0.7 s). For the logo that links to the start page. Inline only, so the hover
-  reaches it; the lockups follow the theme through the tokens, one file per module.
+- **Beat** (`mark-beat.svg`, `lockups/{module}-beat.svg`, 0.76 s): one beat of the loom. The app
+  sets the class `lw-beat-run` on the svg or an ancestor on `pointerenter` and `focus` of the logo
+  link and removes it after 800 ms, so a beat always finishes and the next one waits for it. Without
+  the class it also beats on `:hover` and `:focus-visible` of a link or button around it, but a
+  pointer that leaves early cuts that beat short. Only for the logo that links to the start page,
+  never inside a larger link. Inline only; the lockups follow the theme through the tokens, one
+  file per module.
 - **Relay** (`mark-relay.svg`, 1.6 s loop): the whole mark stands, its ribbons light up in turn,
   clockwise. Nothing moves, so it reads down to 20 px.
 - **Heddle** (`mark-heddle.svg`, 2.4 s loop): the vertical ribbons rise and fall in turn, the

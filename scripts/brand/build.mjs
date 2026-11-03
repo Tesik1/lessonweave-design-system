@@ -166,13 +166,10 @@ const weaveStyle = [
 ];
 
 export function markAnimated(c, id, size = 120) {
-  const tokenised = Object.fromEntries(
-    Object.entries(modules).map(([module, ribbon]) => [ribbon, `var(--module-${module}, ${c[ribbon]})`]),
-  );
   return svg(size, size, 'LessonWeave', [
     ...weaveStyle,
     '<g class="lw-weave">',
-    ...placeMark(0, 0, size, markElements(tokenised, id, { animated: true })),
+    ...placeMark(0, 0, size, markElements(tokenised(c), id, { animated: true })),
     '</g>',
   ]);
 }
@@ -246,12 +243,15 @@ function motionMarkElements(c, id, p, { reveal = false, solid = false, ghost = n
   ];
 }
 
-// Ribbons, wordmark and tag in theme tokens, with the variant's hex values as fallbacks.
-const tokenised = (c) => ({
+// Ribbons and wordmark in theme tokens, with the variant's hex values as fallbacks.
+// A function declaration, so markAnimated above can use it too.
+function tokenised(c) {
+  return {
   ...Object.fromEntries(Object.entries(modules).map(([module, ribbon]) => [ribbon, `var(--module-${module}, ${c[ribbon]})`])),
   lesson: `var(--text, ${c.lesson})`,
   weave: `var(--accent, ${c.weave})`,
-});
+  };
+}
 
 const reducedMotion = (p) => `@media (prefers-reduced-motion:reduce){.${p},.${p} *{animation:none!important;transition:none!important}}`;
 const EASE_OUT = 'cubic-bezier(.25,.8,.25,1)';
