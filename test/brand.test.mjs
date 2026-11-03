@@ -18,11 +18,11 @@ test('every icon has its PNG, and favicon.ico exists', () => {
   assert.ok(existsSync(new URL('brand/icons/favicon.ico', root)));
 });
 
-test('mask ids are unique per file, so inlined logos do not clash', () => {
+test('mask and clip ids are unique per file, so inlined logos do not clash', () => {
   const owners = new Map();
   for (const [path, content] of Object.entries(svgFiles())) {
     if (path === 'brand/icons/favicon.svg') continue; // a copy of favicon-32.svg
-    for (const [, id] of content.matchAll(/<mask id="([^"]+)"/g)) {
+    for (const [, id] of content.matchAll(/<(?:mask|clipPath) id="([^"]+)"/g)) {
       assert.ok(!owners.has(id), `${id} is in ${owners.get(id)} and ${path}`);
       owners.set(id, path);
     }
@@ -51,6 +51,78 @@ test('the animated mark follows the module tokens and stands still with reduced 
     assert.match(content, /lw-weave-fade\{0%,90%\{opacity:1\}98\.75%,100%\{opacity:0\}\}/);
     assert.match(content, /@keyframes lw-weave-top\{0%,5%\{/);
     assert.match(content, /prefers-reduced-motion:reduce\)\{\.lw-weave,\.lw-weave \*\{animation:none!important\}/);
+  }
+});
+
+test('logo motion: every file follows the theme tokens and stands still with reduced motion', () => {
+  const files = svgFiles();
+  const motion = {
+    'brand/logo-intro.svg': 'intro',
+    'brand/logo-intro-dark.svg': 'intro',
+    'brand/mark-beat.svg': 'beat',
+    'brand/mark-relay.svg': 'relay',
+    'brand/mark-relay-dark.svg': 'relay',
+    'brand/mark-heddle.svg': 'heddle',
+    'brand/mark-heddle-dark.svg': 'heddle',
+    'brand/mark-fill.svg': 'fill',
+    ...Object.fromEntries(['flashcards', 'practice', 'planner', 'insights'].map((m) => [`brand/lockups/${m}-beat.svg`, 'beat'])),
+  };
+  for (const [path, name] of Object.entries(motion)) {
+    const content = files[path];
+    assert.ok(content, `${path} missing`);
+    for (const m of ['flashcards', 'practice', 'planner', 'insights']) assert.ok(content.includes(`var(--module-${m}, #`), `${path}: ${m}`);
+    assert.ok(content.includes(`<g class="lw-${name}">`), `${path}: root group`);
+    assert.ok(
+      content.includes(`@media (prefers-reduced-motion:reduce){.lw-${name},.lw-${name} *{animation:none!important;transition:none!important}}`),
+      `${path}: reduced motion`,
+    );
+    // Only this motion's classes, so two inlined motions never share keyframes
+    for (const [, cls] of content.matchAll(/class="(lw-[a-z]+)/g)) assert.ok(cls === `lw-${name}` || cls.startsWith(`lw-${name}-`), `${path}: ${cls}`);
+  }
+  // Dark files fall back to the dark ribbon colours
+  assert.ok(files['brand/mark-relay-dark.svg'].includes('var(--module-flashcards, #EBC25A)'));
+  assert.ok(files['brand/logo-intro-dark.svg'].includes('var(--text, #EFE9DF)'));
+});
+
+test('logo motion: each ribbon moves together with the gaps it cuts', () => {
+  for (const path of ['brand/logo-intro.svg', 'brand/mark-beat.svg', 'brand/mark-heddle.svg']) {
+    const content = svgFiles()[path];
+    const name = path.match(/(intro|beat|heddle)/)[1];
+    // The vertical cuts in the top ribbon and the gap lines in the verticals carry the ribbon's class
+    for (const r of ['left', 'right', 'bottom']) {
+      assert.match(content, new RegExp(`<mask[^>]*>[\\s\\S]*?<path class="lw-${name}-${r}" d=`), `${path}: cut of ${r}`);
+    }
+  }
+});
+
+test('logo motion: intro and fill reveal each ribbon with its cuts; relay cuts the whole bottom ribbon', () => {
+  const files = svgFiles();
+  for (const path of ['brand/logo-intro.svg', 'brand/mark-fill.svg']) {
+    for (const r of ['top', 'left', 'right', 'bottom']) {
+      const id = files[path].match(new RegExp(`<clipPath id="([^"]+)"><rect class="lw-[a-z]+-${r}-clip"`))[1];
+      // The ribbon and the cuts it makes in the masks share the clip
+      assert.ok(files[path].split(`clip-path="url(#${id})"`).length - 1 >= (r === 'top' ? 1 : 2), `${path}: ${r}`);
+    }
+  }
+  assert.match(files['brand/mark-fill.svg'], /scaleX\(clamp\(0,calc\(var\(--lw-progress,0\)\*4\),1\)\)/);
+  assert.match(files['brand/mark-fill.svg'], /scaleX\(clamp\(0,calc\(var\(--lw-progress,0\)\*4 - 3\),1\)\)/);
+  assert.ok(files['brand/mark-fill.svg'].includes('var(--neutral-soft, #'));
+  assert.match(files['brand/mark-relay.svg'], /<path class="lw-relay-bottom" d="M10 70H110L103 80L110 90H10L17 80Z" fill="#000" stroke="#000" stroke-width="6"/);
+});
+
+test('beat lockups match the static header lockups in size and name', () => {
+  const files = svgFiles();
+  for (const m of ['flashcards', 'practice', 'planner', 'insights']) {
+    const open = (path) => files[path].split('\n')[0];
+    assert.equal(open(`brand/lockups/${m}-beat.svg`), open(`brand/lockups/${m}-light.svg`));
+    assert.ok(files[`brand/lockups/${m}-beat.svg`].includes(`var(--on-module-${m}, #`));
+  }
+});
+
+test('the static files did not take any motion', () => {
+  for (const [path, content] of Object.entries(svgFiles())) {
+    if (/-(intro|beat|relay|heddle|fill)(-dark)?\.svg$|mark-animated/.test(path)) continue;
+    assert.ok(!content.includes('<style>'), `${path} has a style`);
   }
 });
 

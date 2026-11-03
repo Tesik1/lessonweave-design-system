@@ -117,6 +117,23 @@ The module icon and the coloured text are out of the header.
 Dark stays `#EBC25A`. As a graphic it is still under the 3:1 for UI shapes, a deliberate choice
 for a warmer amber; text on it (`#221E19`) is 5.9:1.
 
+## 10 – logo motion (2026-11-03, v3.2.0)
+
+**Problem:** the only motion was the weave loop for page loading. Short waits inside a screen
+showed a spinner, a wait for the AI showed the same loop as a page load, the website and the app
+start had no entrance, and the logo link had no response to hover.
+
+**Decision:** five motions from the canvas "LessonWeave Logo Motion"
+(https://claude.ai/artifact/Bem4DEd3KgH6c6JvnzkHee), all approved: Intro (website hero and app
+start, once), Beat (logo link, hover and focus), Relay (short waits in rows, cards and sections),
+Heddle (waits for the AI) and Fill (waits with known progress). The weave loop stays for a whole
+page or panel loading. The spinner stays only inside buttons.
+
+**Rules:** every cut moves or appears with its ribbon, so no gap shows before its ribbon or after
+it moved away (the first Intro draft let the cuts show early as dark stripes). Relay cuts the whole
+bottom ribbon out of the verticals, so a dimmed bottom ribbon shows no verticals through it. Intro
+weaves like a loom: the verticals (warp) first, then each horizontal (weft) drawn through them.
+
 ## Next
 
 1. Design system artifact v3: rename, tokens (`module-*`, `on-module-*`, `module` / `on-module`,

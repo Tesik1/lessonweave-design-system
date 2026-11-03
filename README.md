@@ -91,6 +91,11 @@ boards. Use them as files; do not redraw the logo or set the wordmark in a font.
 | `logo-vertical-{…}.svg` | Stacked logo, where there is little width |
 | `mark-{…}.svg` | The mark alone |
 | `mark-animated.svg`, `mark-animated-dark.svg` | The animated mark for loading (see below) |
+| `logo-intro.svg`, `logo-intro-dark.svg` | Horizontal logo that weaves itself once on load (see Logo motion) |
+| `mark-beat.svg`, `lockups/{module}-beat.svg` | Mark and header lockups with one beat on hover or focus; inline only |
+| `mark-relay.svg`, `mark-relay-dark.svg` | Short waits inside a screen: the ribbons light up in turn |
+| `mark-heddle.svg`, `mark-heddle-dark.svg` | Waits for the AI: the ribbons rise and fall |
+| `mark-fill.svg` | Waits with known progress, driven by `--lw-progress`; inline only |
 | `lockups/{flashcards,practice,planner,insights}-{light,dark}.svg` | Header lockup: mark, wordmark and under it the module name on a tag in the module colour (see Header) |
 | `modules/{flashcards,practice,planner,insights}-{light,dark}.svg` | Module icon: the module's own ribbon in colour, the others in `ribbon-muted` (`#D3C8B6` / `#423C33`) |
 | `icons/app-icon-ios-1024.png`, `icons/apple-touch-icon-180.png` | iOS, square (the system rounds the corners) |
@@ -125,12 +130,19 @@ next to the lockup.
 
 ### Loading
 
-A whole page or panel loading (app start, sign-in, student page, dashboard, editor) shows the
-animated mark at 40 px with a text such as "Loading…" beside it, and only after 300 ms, so fast
-loads do not flash. Inside buttons, rows and dialogs the spinner (`loader-2`) stays.
+Every wait has one motion. The mark is always `aria-hidden` and has a short text beside or under
+it, which is what screen readers read (`role="status"` on the text or its wrapper).
 
-A wait for the AI of unknown length (reading photos) shows the same mark at once, since a click
-started it, with the usual time and Cancel under it; a progress bar is only for known steps.
+| Wait | File | Size | When |
+|---|---|---|---|
+| A whole page or panel loading (app start, sign-in, student page, dashboard, editor, settings) | `mark-animated.svg` | 40 px | after 300 ms |
+| A short wait inside a screen: a section or card loading, a row saving, a list refreshing | `mark-relay.svg` | 20–40 px | after 300 ms |
+| A wait for the AI of unknown length: writing exercises, reading words from photos, suggesting a set | `mark-heddle.svg` | 40–96 px | at once (a click started it), with the usual time and Cancel under it |
+| A wait with known steps: import, export, reading photos one by one, uploading images | `mark-fill.svg` | 40–96 px | at once, with "12 of 30" or a percentage under it |
+
+Inside buttons the spinner (`loader-2`) stays: the mark does not fit there and short waits would
+only flash. Fill is only for steps that take longer than a second; a shorter one uses Relay.
+ProgressBar stays for progress inside a row or header.
 
 The ribbons weave in one after another and the mark fades out and starts again (4 s loop; the empty
 moment before the next loop is 0.25 s, about the pause between two ribbons). With
@@ -144,6 +156,34 @@ moment before the next loop is 0.25 s, about the pause between two ribbons). Wit
   `mark-animated-dark.svg` on dark.
 
 Mark the mark `aria-hidden` there; the text beside it is what screen readers read.
+
+### Logo motion
+
+Five more animated files, each with its own class prefix (`lw-intro-*`, `lw-beat-*`, `lw-relay-*`,
+`lw-heddle-*`, `lw-fill-*`), so two of them inlined on one page do not touch each other. All of
+them keep the over-under of the ribbons while they move (every cut moves with its ribbon), use
+`var(--module-*, #hex)` like the animated mark, and stand still with `prefers-reduced-motion:
+reduce`. Inlined, give each copy unique mask and clip ids by replacing the file's id prefix
+(`lw-logo-intro-`, `lw-mark-relay-`, `lw-lockup-practice-beat-`, …), as for the animated mark.
+
+- **Intro** (`logo-intro.svg`, 1.4 s, once): the vertical ribbons drop in, the top ribbon is drawn
+  through them from the left, the bottom one from the right, then the wordmark unrolls. For the
+  website's hero and the first screen of an app start. Once per visit, never in a loop; the content
+  beside it does not wait for it. It plays when the file loads, so it works as `<img>` too (light
+  and dark file); to play it again, insert it again.
+- **Beat** (`mark-beat.svg`, `lockups/{module}-beat.svg`, 0.7 s): one beat of the loom when the
+  pointer or keyboard focus reaches the link or button around the logo (`a:hover`,
+  `a:focus-visible`), or when the app sets the class `lw-beat-run` on it or an ancestor (for a tap;
+  remove it after 0.7 s). For the logo that links to the start page. Inline only, so the hover
+  reaches it; the lockups follow the theme through the tokens, one file per module.
+- **Relay** (`mark-relay.svg`, 1.6 s loop): the whole mark stands, its ribbons light up in turn,
+  clockwise. Nothing moves, so it reads down to 20 px.
+- **Heddle** (`mark-heddle.svg`, 2.4 s loop): the vertical ribbons rise and fall in turn, the
+  horizontal ones sway; calm enough to watch for half a minute.
+- **Fill** (`mark-fill.svg`): set `--lw-progress` (0–1) on the svg or an ancestor; each ribbon is a
+  quarter, drawn in weave order over a quiet copy of the mark in `neutral-soft`. At 1 the app may set
+  `lw-fill-done` on an ancestor for a short pop that confirms it. Inline only. With reduced motion
+  the ribbons still follow the progress, without easing.
 
 ## Releasing a new version
 
