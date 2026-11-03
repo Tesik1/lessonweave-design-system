@@ -1,4 +1,4 @@
-// Generated from tokens.json (design system "LessonWeave design system" v3, package 3.0.0) by scripts/build.mjs. Do not edit.
+// Generated from tokens.json (design system "LessonWeave design system" v3, package 3.2.0) by scripts/build.mjs. Do not edit.
 
 // Colour from a CSS variable with opacity support (`bg-accent/50`). Without an opacity
 // (Tailwind then passes undefined or `var(--tw-bg-opacity)`) the bare variable is kept.

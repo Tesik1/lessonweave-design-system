@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="LessonWeave">
+<title>LessonWeave</title>
+<style>
+.lw-fill-top-clip{transform-box:fill-box;transform-origin:left center;transform:scaleX(clamp(0,calc(var(--lw-progress,0)*4),1));transition:transform .3s ease-out}
+.lw-fill-left-clip{transform-box:fill-box;transform-origin:center top;transform:scaleY(clamp(0,calc(var(--lw-progress,0)*4 - 1),1));transition:transform .3s ease-out}
+.lw-fill-right-clip{transform-box:fill-box;transform-origin:center top;transform:scaleY(clamp(0,calc(var(--lw-progress,0)*4 - 2),1));transition:transform .3s ease-out}
+.lw-fill-bottom-clip{transform-box:fill-box;transform-origin:right center;transform:scaleX(clamp(0,calc(var(--lw-progress,0)*4 - 3),1));transition:transform .3s ease-out}
+@keyframes lw-fill-done{40%{transform:scale(1.07)}}
+.lw-fill{transform-box:fill-box;transform-origin:center}
+.lw-fill-done .lw-fill{animation:lw-fill-done .45s cubic-bezier(.3,1.4,.5,1)}
+@media (prefers-reduced-motion:reduce){.lw-fill,.lw-fill *{animation:none!important;transition:none!important}}
+</style>
+<g class="lw-fill">
+<g transform="translate(0 0) scale(1)">
+<defs>
+<clipPath id="lw-mark-fill-top"><rect class="lw-fill-top-clip" x="5" y="25" width="110" height="30"/></clipPath>
+<clipPath id="lw-mark-fill-left"><rect class="lw-fill-left-clip" x="25" y="5" width="30" height="110"/></clipPath>
+<clipPath id="lw-mark-fill-right"><rect class="lw-fill-right-clip" x="65" y="5" width="30" height="110"/></clipPath>
+<clipPath id="lw-mark-fill-bottom"><rect class="lw-fill-bottom-clip" x="5" y="65" width="110" height="30"/></clipPath>
+<mask id="lw-mark-fill-under" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
+<rect width="120" height="120" fill="#fff"/>
+<g clip-path="url(#lw-mark-fill-left)"><path class="lw-fill-left" d="M30 10L40 17L50 10V110L40 103L30 110Z" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/></g>
+<g clip-path="url(#lw-mark-fill-right)"><path class="lw-fill-right" d="M70 10L80 17L90 10V110L80 103L70 110Z" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/></g>
+</mask>
+<mask id="lw-mark-fill-verticals" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
+<rect width="120" height="120" fill="#fff"/>
+<g clip-path="url(#lw-mark-fill-bottom)"><path class="lw-fill-bottom" d="M28 68.5H52M28 91.5H52M68 68.5H92M68 91.5H92" stroke="#000" stroke-width="3"/></g>
+</mask>
+</defs>
+<g style="fill:var(--neutral-soft, #ECE6DA)"><path d="M10 30H110L103 40L110 50H10L17 40Z"/><path d="M30 10L40 17L50 10V110L40 103L30 110Z"/><path d="M70 10L80 17L90 10V110L80 103L70 110Z"/><path d="M10 70H110L103 80L110 90H10L17 80Z"/></g>
+<g mask="url(#lw-mark-fill-under)">
+<g class="lw-fill-top-fade" clip-path="url(#lw-mark-fill-top)"><path class="lw-fill-top" d="M10 30H110L103 40L110 50H10L17 40Z" style="fill:var(--module-flashcards, #D48A19)"/></g>
+</g>
+<g mask="url(#lw-mark-fill-verticals)">
+<g class="lw-fill-left-fade" clip-path="url(#lw-mark-fill-left)"><path class="lw-fill-left" d="M30 10L40 17L50 10V110L40 103L30 110Z" style="fill:var(--module-practice, #2F7A78)"/></g>
+<g class="lw-fill-right-fade" clip-path="url(#lw-mark-fill-right)"><path class="lw-fill-right" d="M70 10L80 17L90 10V110L80 103L70 110Z" style="fill:var(--module-planner, #8C4A78)"/></g>
+</g>
+<g class="lw-fill-bottom-fade" clip-path="url(#lw-mark-fill-bottom)"><path class="lw-fill-bottom" d="M10 70H110L103 80L110 90H10L17 80Z" style="fill:var(--module-insights, #4A4DB0)"/></g>
+</g>
+</g>
+</svg>

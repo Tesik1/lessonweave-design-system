@@ -1,5 +1,20 @@
 # Changelog
 
+## 3.2.0 – 2026-11-03
+
+Design system artifact v3.8.0 (Assets › Motion, Brand and logo › Loading and Logo motion).
+
+- **Logo motion:** five animated files besides the animated mark, from the canvas "LessonWeave Logo
+  Motion": `logo-intro` (the logo weaves itself once on load, for the website and an app start),
+  `mark-beat` and `lockups/{module}-beat` (one beat on hover or focus of the logo link),
+  `mark-relay` (short waits inside a screen), `mark-heddle` (waits for the AI) and `mark-fill`
+  (waits with known progress, `--lw-progress`). Each keeps the over-under of the ribbons while it
+  moves, follows the module tokens and stands still with reduced motion.
+- **Loading rule changed:** short waits in rows, cards and sections show Relay (20–40 px) instead of
+  the spinner; the spinner stays inside buttons. A wait for the AI shows Heddle instead of the
+  animated mark, which stays for a whole page or panel loading. A wait with known steps shows Fill
+  with the count under it.
+
 ## 3.1.1 – 2026-11-01
 
 - **Animated mark:** 4 s loop (was 4.4 s). After the fade the next loop starts in 0.25 s, about the

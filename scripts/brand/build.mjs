@@ -88,8 +88,8 @@ function wordElements(c, x, baseline, F) {
   const s = String(Math.round((F / em) * 1e6) / 1e6);
   return [
     `<g transform="translate(${fmt(x)} ${fmt(baseline)}) scale(${s})">`,
-    `<path d="${wordmark.paths.lesson}" fill="${c.lesson}"/>`,
-    `<path d="${wordmark.paths.weave}" fill="${c.weave}"/>`,
+    `<path d="${wordmark.paths.lesson}" ${paint(c.lesson)}/>`,
+    `<path d="${wordmark.paths.weave}" ${paint(c.weave)}/>`,
     '</g>',
   ];
 }
@@ -166,13 +166,207 @@ const weaveStyle = [
 ];
 
 export function markAnimated(c, id, size = 120) {
-  const tokenised = Object.fromEntries(
-    Object.entries(modules).map(([module, ribbon]) => [ribbon, `var(--module-${module}, ${c[ribbon]})`]),
-  );
   return svg(size, size, 'LessonWeave', [
     ...weaveStyle,
     '<g class="lw-weave">',
-    ...placeMark(0, 0, size, markElements(tokenised, id, { animated: true })),
+    ...placeMark(0, 0, size, markElements(tokenised(c), id, { animated: true })),
+    '</g>',
+  ]);
+}
+
+/*
+ * Logo motion (canvas "LessonWeave Logo Motion"): five more animated files, each with its
+ * own class prefix, so their inlined styles never touch one another.
+ *   intro  – logo, once on load: the verticals drop in, the top ribbon is drawn through
+ *            them from the left, the bottom one from the right, then the wordmark unrolls
+ *   beat   – mark and header lockups, one beat on hover or focus of the link around them
+ *   relay  – mark, loop: the ribbons light up in turn, clockwise; reads down to 20 px
+ *   heddle – mark, loop: the verticals rise and fall, the horizontals sway
+ *   fill   – mark, driven by --lw-progress (0–1): a quarter of the progress per ribbon
+ */
+const RIBBONS = ['top', 'left', 'right', 'bottom'];
+
+// The whole bottom ribbon (plus its 1.5-unit gaps) as a cut in the verticals, for relay:
+// with only the gap lines cut, the verticals show through a dimmed bottom ribbon.
+const BOTTOM_CUT = `<path d="${BOTTOM}" fill="#000" stroke="#000" stroke-width="6" stroke-linejoin="round"/>`;
+
+// Clip rects that reveal a ribbon (and the cuts it makes) along its length.
+const REVEAL = {
+  top: [5, 25, 110, 30],
+  left: [25, 5, 30, 110],
+  right: [65, 5, 30, 110],
+  bottom: [5, 65, 110, 30],
+};
+
+/**
+ * The mark for logo motion, in its own 120×120 space. Every ribbon and every cut it makes
+ * in the others is a path with the class `{p}-{ribbon}`, so they move together and the
+ * over-under stays right; the visible ribbon sits in a group `{p}-{ribbon}-fade` that
+ * carries its opacity alone. With `reveal`, a ribbon and its cuts share a clip rect
+ * `{p}-{ribbon}-clip`. `solid` cuts the whole bottom ribbon out of the verticals, `ghost`
+ * draws the mark underneath in a quiet colour.
+ */
+function motionMarkElements(c, id, p, { reveal = false, solid = false, ghost = null } = {}) {
+  const under = `${id}-under`;
+  const verticals = `${id}-verticals`;
+  const clip = (r) => (reveal ? ` clip-path="url(#${id}-${r})"` : '');
+  const cut = (r, path) => `<g${clip(r)}>${path.replace('<path', `<path class="${p}-${r}"`)}</g>`;
+  const ribbon = (r, d) => `<g class="${p}-${r}-fade"${clip(r)}><path class="${p}-${r}" d="${d}" ${paint(c[r])}/></g>`;
+  const gaps = CROSSINGS.map((x) => `M${x + 2} 68.5H${x + 26}M${x + 2} 91.5H${x + 26}`).join('');
+  return [
+    '<defs>',
+    ...(reveal
+      ? RIBBONS.map(
+          (r) =>
+            `<clipPath id="${id}-${r}"><rect class="${p}-${r}-clip" x="${REVEAL[r][0]}" y="${REVEAL[r][1]}" width="${REVEAL[r][2]}" height="${REVEAL[r][3]}"/></clipPath>`,
+        )
+      : []),
+    `<mask id="${under}" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">`,
+    '<rect width="120" height="120" fill="#fff"/>',
+    cut('left', `<path d="${LEFT}" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/>`),
+    cut('right', `<path d="${RIGHT}" fill="#000" stroke="#000" stroke-width="5" stroke-linejoin="round"/>`),
+    '</mask>',
+    `<mask id="${verticals}" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">`,
+    '<rect width="120" height="120" fill="#fff"/>',
+    cut('bottom', solid ? BOTTOM_CUT : `<path d="${gaps}" stroke="#000" stroke-width="3"/>`),
+    '</mask>',
+    '</defs>',
+    ...(ghost ? [`<g ${paint(ghost)}><path d="${TOP}"/><path d="${LEFT}"/><path d="${RIGHT}"/><path d="${BOTTOM}"/></g>`] : []),
+    `<g mask="url(#${under})">`,
+    ribbon('top', TOP),
+    '</g>',
+    `<g mask="url(#${verticals})">`,
+    ribbon('left', LEFT),
+    ribbon('right', RIGHT),
+    '</g>',
+    ribbon('bottom', BOTTOM),
+  ];
+}
+
+// Ribbons and wordmark in theme tokens, with the variant's hex values as fallbacks.
+// A function declaration, so markAnimated above can use it too.
+function tokenised(c) {
+  return {
+  ...Object.fromEntries(Object.entries(modules).map(([module, ribbon]) => [ribbon, `var(--module-${module}, ${c[ribbon]})`])),
+  lesson: `var(--text, ${c.lesson})`,
+  weave: `var(--accent, ${c.weave})`,
+  };
+}
+
+const reducedMotion = (p) => `@media (prefers-reduced-motion:reduce){.${p},.${p} *{animation:none!important;transition:none!important}}`;
+const EASE_OUT = 'cubic-bezier(.25,.8,.25,1)';
+const EASE_DRAW = 'cubic-bezier(.5,0,.2,1)';
+
+const MOTION_STYLE = {
+  intro: [
+    '@keyframes lw-intro-drop{from{transform:translateY(-24px)}}',
+    '@keyframes lw-intro-fade{from{opacity:0}}',
+    '@keyframes lw-intro-draw{from{transform:scaleX(0)}}',
+    `.lw-intro-left{animation:lw-intro-drop .5s ${EASE_OUT} both}`,
+    `.lw-intro-right{animation:lw-intro-drop .5s ${EASE_OUT} .1s both}`,
+    '.lw-intro-left-fade{animation:lw-intro-fade .35s ease-out both}',
+    '.lw-intro-right-fade{animation:lw-intro-fade .35s ease-out .1s both}',
+    `.lw-intro-top-clip{transform-box:fill-box;transform-origin:left center;animation:lw-intro-draw .5s ${EASE_DRAW} .4s both}`,
+    `.lw-intro-bottom-clip{transform-box:fill-box;transform-origin:right center;animation:lw-intro-draw .5s ${EASE_DRAW} .62s both}`,
+    `.lw-intro-word-clip{transform-box:fill-box;transform-origin:left center;animation:lw-intro-draw .5s cubic-bezier(.45,0,.2,1) .9s both}`,
+    reducedMotion('lw-intro'),
+  ],
+  beat: [
+    ...[
+      ['l', 'translateX(-5px)', 'translateX(1.5px)'],
+      ['r', 'translateX(5px)', 'translateX(-1.5px)'],
+      ['u', 'translateY(-5px)', 'translateY(1.5px)'],
+      ['d', 'translateY(5px)', 'translateY(-1.5px)'],
+    ].map(([k, out, back]) => `@keyframes lw-beat-${k}{0%,100%{transform:none}30%{transform:${out}}62%{transform:${back}}}`),
+    // A beat when the pointer or the keyboard reaches the link or button around the
+    // logo, or when the app sets lw-beat-run on it (a tap)
+    ...[
+      ['top', 'l', 0],
+      ['bottom', 'r', 0],
+      ['left', 'u', 0.06],
+      ['right', 'd', 0.06],
+    ].map(
+      ([r, k, delay]) =>
+        `:is(a,button):hover .lw-beat-${r},:is(a,button):focus-visible .lw-beat-${r},.lw-beat-run .lw-beat-${r}{animation:lw-beat-${k} .7s ease-in-out ${delay}s both}`,
+    ),
+    reducedMotion('lw-beat'),
+  ],
+  relay: [
+    '@keyframes lw-relay{0%,100%{opacity:.35}10%,35%{opacity:1}58%{opacity:.35}}',
+    // Clockwise from the top: top, right, bottom, left
+    ...[
+      ['top', -1.6],
+      ['right', -1.2],
+      ['bottom', -0.8],
+      ['left', -0.4],
+    ].map(([r, delay]) => `.lw-relay-${r}-fade{animation:lw-relay 1.6s ease-in-out ${delay}s infinite both}`),
+    reducedMotion('lw-relay'),
+  ],
+  heddle: [
+    '@keyframes lw-heddle-y{0%,100%{transform:none}25%{transform:translateY(-6px)}75%{transform:translateY(6px)}}',
+    '@keyframes lw-heddle-x{0%,100%{transform:none}25%{transform:translateX(4px)}75%{transform:translateX(-4px)}}',
+    '.lw-heddle-left{animation:lw-heddle-y 2.4s ease-in-out infinite}',
+    '.lw-heddle-right{animation:lw-heddle-y 2.4s ease-in-out -1.2s infinite}',
+    '.lw-heddle-top{animation:lw-heddle-x 2.4s ease-in-out -.6s infinite}',
+    '.lw-heddle-bottom{animation:lw-heddle-x 2.4s ease-in-out -1.8s infinite}',
+    reducedMotion('lw-heddle'),
+  ],
+  fill: [
+    // In weave order, a quarter each: top from the left, the verticals from the top,
+    // the bottom one from the right
+    ...[
+      ['top', 'left center', 'scaleX', 0],
+      ['left', 'center top', 'scaleY', 1],
+      ['right', 'center top', 'scaleY', 2],
+      ['bottom', 'right center', 'scaleX', 3],
+    ].map(
+      ([r, origin, scale, quarter]) =>
+        `.lw-fill-${r}-clip{transform-box:fill-box;transform-origin:${origin};transform:${scale}(clamp(0,calc(var(--lw-progress,0)*4${quarter ? ` - ${quarter}` : ''}),1));transition:transform .3s ease-out}`,
+    ),
+    '@keyframes lw-fill-done{40%{transform:scale(1.07)}}',
+    '.lw-fill{transform-box:fill-box;transform-origin:center}',
+    '.lw-fill-done .lw-fill{animation:lw-fill-done .45s cubic-bezier(.3,1.4,.5,1)}',
+    reducedMotion('lw-fill'),
+  ],
+};
+
+const MOTION_OPTIONS = {
+  intro: { reveal: true },
+  beat: {},
+  relay: { solid: true },
+  heddle: {},
+  fill: { reveal: true },
+};
+
+const motionStyle = (motion) => ['<style>', ...MOTION_STYLE[motion], '</style>'];
+
+/** The mark with one of the logo motions; colours follow the theme tokens when inlined. */
+export function markMotion(motion, c, id, size = 120) {
+  const p = `lw-${motion}`;
+  const ghost = motion === 'fill' ? `var(--neutral-soft, ${colorToken('neutral-soft').light})` : null;
+  return svg(size, size, 'LessonWeave', [
+    ...motionStyle(motion),
+    `<g class="${p}">`,
+    ...placeMark(0, 0, size, motionMarkElements(tokenised(c), id, p, { ...MOTION_OPTIONS[motion], ghost })),
+    '</g>',
+  ]);
+}
+
+/** The horizontal logo with the intro: the mark weaves itself, then the wordmark unrolls. */
+export function logoIntro(c, id, F = 72) {
+  const M = 1.5 * F;
+  const gap = (20 / 72) * F;
+  const width = M + gap + wordWidth(F);
+  const baseline = (M - F) / 2 + baselineInBox(F);
+  const t = tokenised(c);
+  return svg(width, M, 'LessonWeave', [
+    ...motionStyle('intro'),
+    '<g class="lw-intro">',
+    `<defs><clipPath id="${id}-word"><rect class="lw-intro-word-clip" x="${fmt(M)}" y="0" width="${fmt(width - M)}" height="${fmt(M)}"/></clipPath></defs>`,
+    ...placeMark(0, 0, M, motionMarkElements(t, id, 'lw-intro', MOTION_OPTIONS.intro)),
+    `<g clip-path="url(#${id}-word)">`,
+    ...wordElements(t, M + gap, baseline, F),
+    '</g>',
     '</g>',
   ]);
 }
@@ -240,8 +434,11 @@ const LOCKUP = {
   tagFont: 12,
 };
 
-export function lockup(module, theme, id) {
+export function lockup(module, theme, id, { beat = false } = {}) {
   const c = theme === 'dark' ? variants.dark : variants.color;
+  // With beat the lockup is for inlining: colours are theme tokens, so one file serves both themes
+  const colours = beat ? tokenised(c) : c;
+  const tag = (token) => (beat ? `var(--${token}, ${colorToken(token)[theme]})` : colorToken(token)[theme]);
   const name = moduleNames.modules[module];
   const L = LOCKUP;
   const x = L.height + L.gap;
@@ -249,14 +446,15 @@ export function lockup(module, theme, id) {
   const tagWidth = (name.advance * L.tagFont) / moduleNames.unitsPerEm + 2 * L.tagPadding;
   const width = x + Math.max(wordWidth(L.word), tagWidth);
   const textBaseline = L.tagTop + L.tagHeight / 2 + capHeight(L.tagFont) / 2;
-  return svg(width, L.height, `LessonWeave ${name.text}`, [
-    ...placeMark(0, 0, L.height, markElements(c, id)),
-    ...wordElements(c, x, capHeight(L.word), L.word),
-    `<rect x="${fmt(x)}" y="${L.tagTop}" width="${fmt(tagWidth)}" height="${L.tagHeight}" rx="${L.tagRadius}" fill="${colorToken(`module-${module}`)[theme]}"/>`,
+  const body = [
+    ...placeMark(0, 0, L.height, beat ? motionMarkElements(colours, id, 'lw-beat') : markElements(c, id)),
+    ...wordElements(colours, x, capHeight(L.word), L.word),
+    `<rect x="${fmt(x)}" y="${L.tagTop}" width="${fmt(tagWidth)}" height="${L.tagHeight}" rx="${L.tagRadius}" ${paint(tag(`module-${module}`))}/>`,
     `<g transform="translate(${fmt(x + L.tagPadding)} ${fmt(textBaseline)}) scale(${L.tagFont / moduleNames.unitsPerEm})">`,
-    `<path d="${name.path}" fill="${colorToken(`on-module-${module}`)[theme]}"/>`,
+    `<path d="${name.path}" ${paint(tag(`on-module-${module}`))}/>`,
     '</g>',
-  ]);
+  ];
+  return svg(width, L.height, `LessonWeave ${name.text}`, beat ? [...motionStyle('beat'), '<g class="lw-beat">', ...body, '</g>'] : body);
 }
 
 /** Every SVG file in brand/, as { path: content }. */
@@ -279,6 +477,18 @@ export function svgFiles() {
       files[`brand/lockups/${module}-${theme}.svg`] = lockup(module, theme, `lw-lockup-${module}-${theme}`);
     }
   }
+  // Logo motion. Files used as <img> come in light and dark; beat and fill only work inlined.
+  files['brand/logo-intro.svg'] = logoIntro(variants.color, 'lw-logo-intro');
+  files['brand/logo-intro-dark.svg'] = logoIntro(variants.dark, 'lw-logo-intro-dark');
+  files['brand/mark-beat.svg'] = markMotion('beat', variants.color, 'lw-mark-beat');
+  for (const module of Object.keys(modules)) {
+    files[`brand/lockups/${module}-beat.svg`] = lockup(module, 'light', `lw-lockup-${module}-beat`, { beat: true });
+  }
+  for (const motion of ['relay', 'heddle']) {
+    files[`brand/mark-${motion}.svg`] = markMotion(motion, variants.color, `lw-mark-${motion}`);
+    files[`brand/mark-${motion}-dark.svg`] = markMotion(motion, variants.dark, `lw-mark-${motion}-dark`);
+  }
+  files['brand/mark-fill.svg'] = markMotion('fill', variants.color, 'lw-mark-fill');
   for (const [name, spec] of Object.entries(icons)) {
     files[`brand/icons/${name}.svg`] = icon({ ...spec, id: `lw-${name}` });
   }
