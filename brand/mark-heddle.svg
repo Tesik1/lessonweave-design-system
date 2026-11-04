@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="LessonWeave">
 <title>LessonWeave</title>
 <style>
-@keyframes lw-heddle-y{0%,100%{transform:none}25%{transform:translateY(-6px)}75%{transform:translateY(6px)}}
-@keyframes lw-heddle-x{0%,100%{transform:none}25%{transform:translateX(4px)}75%{transform:translateX(-4px)}}
-.lw-heddle-left{animation:lw-heddle-y 2.4s ease-in-out infinite}
-.lw-heddle-right{animation:lw-heddle-y 2.4s ease-in-out -1.2s infinite}
-.lw-heddle-top{animation:lw-heddle-x 2.4s ease-in-out -.6s infinite}
-.lw-heddle-bottom{animation:lw-heddle-x 2.4s ease-in-out -1.8s infinite}
+@keyframes lw-heddle-y{0%,100%{transform:translateY(-6px)}50%{transform:translateY(6px)}}
+@keyframes lw-heddle-x{0%,100%{transform:translateX(4px)}50%{transform:translateX(-4px)}}
+.lw-heddle-left{animation:lw-heddle-y 2.4s ease-in-out -1.8s infinite}
+.lw-heddle-right{animation:lw-heddle-y 2.4s ease-in-out -.6s infinite}
+.lw-heddle-top{animation:lw-heddle-x 2.4s ease-in-out infinite}
+.lw-heddle-bottom{animation:lw-heddle-x 2.4s ease-in-out -1.2s infinite}
 @media (prefers-reduced-motion:reduce){.lw-heddle,.lw-heddle *{animation:none!important;transition:none!important}}
 </style>
 <g class="lw-heddle">
