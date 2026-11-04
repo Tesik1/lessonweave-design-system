@@ -303,12 +303,15 @@ const MOTION_STYLE = {
     reducedMotion('lw-relay'),
   ],
   heddle: [
-    '@keyframes lw-heddle-y{0%,100%{transform:none}25%{transform:translateY(-6px)}75%{transform:translateY(6px)}}',
-    '@keyframes lw-heddle-x{0%,100%{transform:none}25%{transform:translateX(4px)}75%{transform:translateX(-4px)}}',
-    '.lw-heddle-left{animation:lw-heddle-y 2.4s ease-in-out infinite}',
-    '.lw-heddle-right{animation:lw-heddle-y 2.4s ease-in-out -1.2s infinite}',
-    '.lw-heddle-top{animation:lw-heddle-x 2.4s ease-in-out -.6s infinite}',
-    '.lw-heddle-bottom{animation:lw-heddle-x 2.4s ease-in-out -1.8s infinite}',
+    // One swing between the two ends: it slows only where it turns, never at the centre
+    '@keyframes lw-heddle-y{0%,100%{transform:translateY(-6px)}50%{transform:translateY(6px)}}',
+    '@keyframes lw-heddle-x{0%,100%{transform:translateX(4px)}50%{transform:translateX(-4px)}}',
+    '.lw-heddle-left{animation:lw-heddle-y 2.4s ease-in-out -1.8s infinite}',
+    '.lw-heddle-right{animation:lw-heddle-y 2.4s ease-in-out -.6s infinite}',
+    '.lw-heddle-top{animation:lw-heddle-x 2.4s ease-in-out infinite}',
+    '.lw-heddle-bottom{animation:lw-heddle-x 2.4s ease-in-out -1.2s infinite}',
+    // The gaps it cuts in the verticals stay over them: it sways along its own edges
+    'mask .lw-heddle-bottom{animation:none}',
     reducedMotion('lw-heddle'),
   ],
   fill: [

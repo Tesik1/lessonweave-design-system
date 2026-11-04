@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.2.1 – 2026-11-04
+
+- **Heddle runs smoothly:** each ribbon now swings in one movement between its two ends and slows
+  only where it turns. Before, every quarter of the loop eased to a stop, so the ribbons halted at
+  the centre each time; at 40 px, where the whole swing is 4 px, this looked like a stutter. Same
+  amplitude, period and order of the ribbons.
+- **Heddle keeps its gaps:** the gaps around the indigo ribbon no longer sway with it, so at the
+  ends of its swing no thin strip of the green or plum ribbon shows through them.
+
 ## 3.2.0 – 2026-11-03
 
 Design system artifact v3.8.0 (Assets › Motion, Brand and logo › Loading and Logo motion).
