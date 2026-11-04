@@ -310,6 +310,8 @@ const MOTION_STYLE = {
     '.lw-heddle-right{animation:lw-heddle-y 2.4s ease-in-out -.6s infinite}',
     '.lw-heddle-top{animation:lw-heddle-x 2.4s ease-in-out infinite}',
     '.lw-heddle-bottom{animation:lw-heddle-x 2.4s ease-in-out -1.2s infinite}',
+    // The gaps it cuts in the verticals stay over them: it sways along its own edges
+    'mask .lw-heddle-bottom{animation:none}',
     reducedMotion('lw-heddle'),
   ],
   fill: [

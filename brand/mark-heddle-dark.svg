@@ -7,6 +7,7 @@
 .lw-heddle-right{animation:lw-heddle-y 2.4s ease-in-out -.6s infinite}
 .lw-heddle-top{animation:lw-heddle-x 2.4s ease-in-out infinite}
 .lw-heddle-bottom{animation:lw-heddle-x 2.4s ease-in-out -1.2s infinite}
+mask .lw-heddle-bottom{animation:none}
 @media (prefers-reduced-motion:reduce){.lw-heddle,.lw-heddle *{animation:none!important;transition:none!important}}
 </style>
 <g class="lw-heddle">
