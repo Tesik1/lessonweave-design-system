@@ -180,7 +180,7 @@ reduce`. Inlined, give each copy unique mask and clip ids by replacing the file'
   file per module.
 - **Relay** (`mark-relay.svg`, 1.6 s loop): the whole mark stands, its ribbons light up in turn,
   clockwise. Nothing moves, so it reads down to 20 px.
-- **Heddle** (`mark-heddle.svg`, 2.4 s loop): the vertical ribbons rise and fall in turn, the
+- **Heddle** (`mark-heddle.svg`, 2.1 s loop): the vertical ribbons rise and fall in turn, the
   horizontal ones sway; calm enough to watch for half a minute.
 - **Fill** (`mark-fill.svg`): set `--lw-progress` (0–1) on the svg or an ancestor; each ribbon is a
   quarter, drawn in weave order over a quiet copy of the mark in `neutral-soft`. At 1 the app may set

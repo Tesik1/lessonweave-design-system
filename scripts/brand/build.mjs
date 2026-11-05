@@ -303,13 +303,15 @@ const MOTION_STYLE = {
     reducedMotion('lw-relay'),
   ],
   heddle: [
-    // One swing between the two ends: it slows only where it turns, never at the centre
-    '@keyframes lw-heddle-y{0%,100%{transform:translateY(-6px)}50%{transform:translateY(6px)}}',
-    '@keyframes lw-heddle-x{0%,100%{transform:translateX(4px)}50%{transform:translateX(-4px)}}',
-    '.lw-heddle-left{animation:lw-heddle-y 2.4s ease-in-out -1.8s infinite}',
-    '.lw-heddle-right{animation:lw-heddle-y 2.4s ease-in-out -.6s infinite}',
-    '.lw-heddle-top{animation:lw-heddle-x 2.4s ease-in-out infinite}',
-    '.lw-heddle-bottom{animation:lw-heddle-x 2.4s ease-in-out -1.2s infinite}',
+    // One swing between the two ends: it slows only where it turns, never at the centre.
+    // As wide as the weave allows (no ribbon end reaches a crossing): Firefox draws a move
+    // of a pixel or two in steps, so at 40 px a narrower swing looked jerky there
+    '@keyframes lw-heddle-y{0%,100%{transform:translateY(-10px)}50%{transform:translateY(10px)}}',
+    '@keyframes lw-heddle-x{0%,100%{transform:translateX(8px)}50%{transform:translateX(-8px)}}',
+    '.lw-heddle-left{animation:lw-heddle-y 2.1s ease-in-out -1.575s infinite}',
+    '.lw-heddle-right{animation:lw-heddle-y 2.1s ease-in-out -.525s infinite}',
+    '.lw-heddle-top{animation:lw-heddle-x 2.1s ease-in-out infinite}',
+    '.lw-heddle-bottom{animation:lw-heddle-x 2.1s ease-in-out -1.05s infinite}',
     // The gaps it cuts in the verticals stay over them: it sways along its own edges
     'mask .lw-heddle-bottom{animation:none}',
     reducedMotion('lw-heddle'),

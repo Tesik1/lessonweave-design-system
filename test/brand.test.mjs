@@ -85,6 +85,18 @@ test('logo motion: every file follows the theme tokens and stands still with red
   assert.ok(files['brand/logo-intro-dark.svg'].includes('var(--text, #EFE9DF)'));
 });
 
+test('heddle: the swing keeps every ribbon end clear of the crossings', () => {
+  const content = svgFiles()['brand/mark-heddle.svg'];
+  const swing = (axis) =>
+    Math.max(...[...content.matchAll(new RegExp(`translate${axis}\\((-?[\\d.]+)px\\)`, 'g'))].map((m) => Math.abs(+m[1])));
+  // The verticals' chevrons sit 10 units from the box edge (and from the gap under the
+  // bottom ribbon), the horizontals' ends 10 from the cut around the verticals
+  assert.ok(swing('Y') <= 10, `verticals swing ${swing('Y')}`);
+  assert.ok(swing('X') <= 8, `horizontals swing ${swing('X')}`);
+  // Wide enough for Firefox, which draws a move of a pixel or two in steps
+  assert.ok(swing('Y') >= 10 && swing('X') >= 8);
+});
+
 test('logo motion: each ribbon moves together with the gaps it cuts', () => {
   for (const path of ['brand/logo-intro.svg', 'brand/mark-beat.svg', 'brand/mark-heddle.svg']) {
     const content = svgFiles()[path];
