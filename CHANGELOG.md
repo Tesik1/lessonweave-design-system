@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.2.2 – 2026-11-05
+
+- **Heddle runs smoothly in Firefox too:** the ribbons swing further (the verticals 10 units each
+  way instead of 6, the horizontals 8 instead of 4) and a little faster (2.1 s loop instead of
+  2.4 s). Firefox draws a move of only a pixel or two in steps, so at 40 px, where the old swing was
+  2 px, the mark looked jerky there. The new swing is as wide as the weave allows: no ribbon end
+  reaches a crossing, so the over-under stays whole at the ends of the swing. Other browsers were
+  smooth before and stay so.
+
 ## 3.2.1 – 2026-11-04
 
 - **Heddle runs smoothly:** each ribbon now swings in one movement between its two ends and slows
