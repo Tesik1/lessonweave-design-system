@@ -1,5 +1,20 @@
 # Changelog
 
+## 3.3.0 – 2026-11-12
+
+Design system artifact v3.9.0 (chapter Navigation on a phone; components AppHeader, ModulesMenu,
+Dock).
+
+- **Navigation on a phone:** one 60 px header row (menu button, lockup, TEST, avatar), a Modules
+  menu from the left that holds only the modules, and a dock at the bottom with the page's main
+  action over a bar of the module's pages. Detail pages show back and the title, without the bar.
+  Chosen from the canvas "Mobile header – variants" (variant D with the page bar and dock).
+- **Changed rule:** the module tag in the lockup is not a switcher (before: "in the merged app the
+  tag becomes the module switcher"). On a phone the account menu holds Settings, the diagnostic log,
+  What's new and Sign out.
+- `tokens.json` copied from the artifact: no value changes, the usage notes of the module colours
+  and `meta.source` catch up with v3.1.
+
 ## 3.2.2 – 2026-11-05
 
 - **Heddle runs smoothly in Firefox too:** the ribbons swing further (the verticals 10 units each

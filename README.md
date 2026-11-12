@@ -126,7 +126,26 @@ The app header shows the module's lockup from `brand/lockups/`: 40 px high, 36 p
 link to the module's start page. Light and dark files swap with the theme. The link carries the
 name ("LessonWeave Flashcards"), so the image itself can be decorative. Nothing else marks the
 module in the header: no module icon, no coloured text. A TEST badge for a test deployment stays
-next to the lockup.
+next to the lockup. The lockup is not a module switcher.
+
+### Navigation on a phone
+
+Below about 600 px every teacher screen has the same frame; the design system artifact (chapter
+Navigation on a phone, components AppHeader, ModulesMenu and Dock) has the measurements.
+
+- **Header**, one 60 px row: `menu-2` button that opens the Modules menu, the lockup at 36 px, the
+  TEST badge, and only the avatar on the right. The avatar opens the account menu as a bottom sheet
+  (Settings, Download diagnostic log, What's new, Sign out). A missing API key is a warning strip
+  under the header.
+- **Modules menu**: a panel from the left with one row per module that exists (module icon from
+  `brand/modules/`, name, one-line description); the current one is selected. Only modules.
+- **Dock** at the bottom: the page's main action (primary button, full width) over the PageBar of
+  the module's pages (icon and label, the current one on an `accent-soft` pill). Either part may be
+  missing. While the on-screen keyboard is open the PageBar hides.
+- **Detail pages** (a deck, a set): `arrow-left` and the item's title instead of the menu button
+  and the lockup; no PageBar.
+
+The desktop header stays as it is.
 
 ### Loading
 
