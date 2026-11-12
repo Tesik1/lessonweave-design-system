@@ -134,6 +134,23 @@ it moved away (the first Intro draft let the cuts show early as dark stripes). R
 bottom ribbon out of the verticals, so a dimmed bottom ribbon shows no verticals through it. Intro
 weaves like a loom: the verticals (warp) first, then each horizontal (weft) drawn through them.
 
+## 11 – navigation on a phone (2026-11-12, v3.3.0)
+
+**Problem:** on a phone the header wrapped: lockup, TEST, Log, the avatar with name and chevron,
+and Flashcards' own tab row under it. Switching modules went through the desktop menu, and the
+plan to make the module tag a switcher did not scale to four modules and was easy to miss.
+
+**Decision:** from the canvas "Mobile header – variants"
+(https://claude.ai/artifact/FT2z5oiuBBsLEti8jifZBQ), after variants A (bottom navigation for
+modules), B (tag as switcher), C (one menu for everything) and E (module launcher): variant D with
+E's page bar and the dock F2. A hamburger opens a menu of the modules only; a module's pages stay on
+the screen in a bottom bar, under the page's main action on one surface. Modules change rarely,
+pages often, so pages get one tap and the thumb, modules a known pattern that grows to any number.
+
+**Rejected:** chips for pages at the top of the page (read as filters); the main action floating
+over the bar (covers content, unusual on iPhone); the action at the end of the form (out of reach on
+long forms).
+
 ## Next
 
 1. Design system artifact v3: rename, tokens (`module-*`, `on-module-*`, `module` / `on-module`,
