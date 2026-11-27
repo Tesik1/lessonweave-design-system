@@ -147,6 +147,24 @@ Navigation on a phone, components AppHeader, ModulesMenu and Dock) has the measu
 
 The desktop header stays as it is.
 
+### Selected state and corners
+
+The selected state (`accent-soft` fill, `accent` text, 2 px inset `accent` ring) is drawn on the
+selected item itself, so the item must have the corners of the box it sits in; the design system
+artifact (Actions and state › Selected follows its box's corners) has the rule.
+
+- **Segments in one rounded outline** (SegmentedControl, segmented Tabs): a segment in a corner of
+  the outline is rounded `radius-md` − 1 px (inside the outline's 1 px border); a segment between
+  others stays square. In one row:
+  `first:rounded-l-[calc(var(--radius-md)-1px)] last:rounded-r-[calc(var(--radius-md)-1px)]`; in a
+  grid, each corner cell takes its own corner (`rounded-tl-[…]` …).
+- **An item on its own** (tab, chip, list row, nav item) has its own radius.
+- Never a square selected item in a rounded outline with `overflow: hidden`: the outline cuts the
+  ring off at the corner.
+
+Keep these classes in one place in each app (one constant used by every group of segments), not
+copied into each component.
+
 ### Loading
 
 Every wait has one motion. The mark is always `aria-hidden` and has a short text beside or under

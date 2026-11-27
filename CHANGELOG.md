@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.4.0 – 2026-11-27
+
+Design system artifact v3.11.0 (Actions and state › Selected follows its box's corners; Tabs,
+segmented variant). v3.10.0 (Breadcrumb, icon tables Flashcards and Archive) changed no tokens and
+had no package release.
+
+- **The selected state follows its box's corners:** a segment in a corner of a rounded outline is
+  rounded `radius-md` − 1 px, one between others stays square, an item on its own has its own
+  radius. README › Selected state and corners gives the Tailwind classes. Until now the rule lived
+  only in the app's SegmentedControl, so each new group of segments (the segmented Tabs of the
+  deck library and the deck detail) showed the ring with a square corner cut by the outline.
+- No token or `dist/` changes.
+
 ## 3.3.0 – 2026-11-12
 
 Design system artifact v3.9.0 (chapter Navigation on a phone; components AppHeader, ModulesMenu,
